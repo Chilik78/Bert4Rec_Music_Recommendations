@@ -1,12 +1,14 @@
 from generate_data.write_in_files import write_other_files
 from generate_data.generate_data import generate_test_files, generate_train_files
-from termcolor import colored
-import os
-import random
-import tensorflow as tf
-from util import *
+from collections import defaultdict
 from vocab.Vocab import Vocab
+from termcolor import colored
+import tensorflow as tf
+import random
 import time
+import os
+
+
 
 PARAMETERS = {
     "output_dir": './data/ml-1m/', # Путь папке с данными
@@ -23,6 +25,37 @@ PARAMETERS = {
 }
 
 
+
+def data_partition(fname):
+    usernum = 0
+    itemnum = 0
+    User = defaultdict(list)
+    user_train = {}
+    user_valid = {}
+    user_test = {}
+    # assume user/item index starting from 1
+    f = open(fname, 'r')
+    for line in f:
+        u, i = line.rstrip().split(' ')
+        u = int(u)
+        i = int(i)
+        usernum = max(u, usernum)
+        itemnum = max(i, itemnum)
+        User[u].append(i)
+
+    for user in User:
+        nfeedback = len(User[user])
+        if nfeedback < 3:
+            user_train[user] = User[user]
+            user_valid[user] = []
+            user_test[user] = []
+        else:
+            user_train[user] = User[user][:-2]
+            user_valid[user] = []
+            user_valid[user].append(User[user][-2])
+            user_test[user] = []
+            user_test[user].append(User[user][-1])
+    return [user_train, user_valid, user_test, usernum, itemnum]
 
 
 def show_info_dataset(user_train, user_valid, user_test, usernum, itemnum)->None:
