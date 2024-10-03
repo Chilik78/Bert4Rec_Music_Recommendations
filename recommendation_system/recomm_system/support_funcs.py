@@ -35,7 +35,7 @@ def get_input_files(strings_with_files_paths:list, mode_recomm_system:str):
         return ([], test_input_files, [])
     elif mode_recomm_system == "PREDICT":
         predict_input_file = strings_with_files_paths[2]
-        predict_input_files = []
+        predict_input_files = get_files_paths(predict_input_file)
         return ([], [], predict_input_files)
     else:
         raise Exception(colored("Неверно указан режим работы системы. Возможные значения: TRAIN, EVAL, PREDICT", "red", attrs=['bold', 'underline']))
@@ -103,15 +103,13 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions, l
         label_ids = tf.reshape(label_ids, [-1])
         label_weights = tf.reshape(label_weights, [-1])
 
-        one_hot_labels = tf.one_hot(
-            label_ids, depth=output_weights.shape[0], dtype=tf.float32)
+        one_hot_labels = tf.one_hot(label_ids, depth=output_weights.shape[0], dtype=tf.float32)
 
         # The `positions` tensor might be zero-padded (if the sequence is too
         # short to have the maximum number of predictions). The `label_weights`
         # tensor has a value of 1.0 for every real prediction and 0.0 for the
         # padding predictions.
-        per_example_loss = -tf.reduce_sum(
-            log_probs * one_hot_labels, axis=[-1])
+        per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])
         numerator = tf.reduce_sum(label_weights * per_example_loss)
         denominator = tf.reduce_sum(label_weights) + 1e-5
         loss = numerator / denominator
@@ -136,6 +134,12 @@ def metric_fn(masked_lm_example_loss, masked_lm_log_probs, masked_lm_ids, masked
         "masked_lm_accuracy": masked_lm_accuracy,
         "masked_lm_loss": masked_lm_mean_loss,
     }
+
+
+def get_predictions(masked_lm_log_probs):
+    masked_lm_log_probs = tf.reshape(masked_lm_log_probs, [-1, masked_lm_log_probs.shape[-1]])
+    masked_lm_predictions = tf.argmax(masked_lm_log_probs, axis=-1, output_type=tf.int32)
+    return masked_lm_predictions
 
 
 def decode_record(record, name_to_features):

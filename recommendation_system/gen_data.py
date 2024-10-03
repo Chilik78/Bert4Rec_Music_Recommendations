@@ -1,5 +1,5 @@
 from generate_data.write_in_files import write_other_files
-from generate_data.generate_data import generate_test_files, generate_train_files
+from generate_data.generate_data import generate_test_file, generate_train_file, generate_predict_file
 from collections import defaultdict
 from vocab.Vocab import Vocab
 from termcolor import colored
@@ -11,8 +11,8 @@ import os
 
 
 PARAMETERS = {
-    "output_dir": './data/ml-1m/', # Путь папке с данными
-    "dataset_name": 'ml-1m', # Название датасета
+    "output_dir": './data/steam/', # Путь папке с данными
+    "dataset_name": 'steam', # Название датасета
     "version_id": '', # ID версии
     "random_seed": 12345,
     "dupe_factor": 10, # Кол-во клонирования данных пользователей
@@ -43,6 +43,8 @@ def data_partition(fname):
         itemnum = max(i, itemnum)
         User[u].append(i)
 
+    f.close()
+
     for user in User:
         nfeedback = len(User[user])
         if nfeedback < 3:
@@ -55,7 +57,23 @@ def data_partition(fname):
             user_valid[user].append(User[user][-2])
             user_test[user] = []
             user_test[user].append(User[user][-1])
+    
     return [user_train, user_valid, user_test, usernum, itemnum]
+
+
+def read_data(fname):
+    user_data = defaultdict(list)
+
+    f = open(fname, 'r')
+    for line in f:
+        u, i = line.rstrip().split(' ')
+        u = int(u)
+        i = int(i)
+        user_data[u].append(i)
+        
+    f.close()
+
+    return dict(user_data)
 
 
 def show_info_dataset(user_train, user_valid, user_test, usernum, itemnum)->None:
@@ -85,6 +103,13 @@ def get_test_data(train_data, test_data)->dict:
     }
 
 
+def get_his_data(history_data)->dict:
+    return {
+        f'user_{str(user_id)}': [f'item_{str(item_id)}' for item_id in v]
+        for user_id, v in history_data.items() if len(v) > 0
+    }
+
+
 def get_test_data_output(vocab:Vocab, user_test_data)->dict:
     '''Создание данных, где ключ - id пользователя, а значение - id токенов из словаря (vocab)'''
     user_test_data_output = {k: [vocab.convert_tokens_to_ids(v)] for k, v in user_test_data.items()}
@@ -99,12 +124,10 @@ def show_info_vocab(vocab:Vocab)->None:
     print(colored(f'{vocab_size_in_str}, {user_size_in_str}, {item_size_in_str}, {item_with_other_size_int_str}', 'blue', attrs=['underline']))
 
 
-def main():
+def gen_files_for_train():
 
     start_time = time.time()
 
-    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG) # Установка вывода логов в консоль от tensorflow
-    
     output_dir = PARAMETERS['output_dir'] # Путь папке с данными
     dataset_name = PARAMETERS['dataset_name'] # Название датасета
     version_id = PARAMETERS['version_id'] # ID версии
@@ -133,6 +156,7 @@ def main():
     # Itemnum - кол-во элементов всех пользователей
     [user_train, user_valid, user_test, usernum, itemnum] = dataset 
     
+
     # Запуск проверки подлинности в тренировке (Непонятно зачем нужен этот цикл)
     for u in user_train:
         if u in user_valid: # Это странно работает O_o
@@ -142,17 +166,17 @@ def main():
 
     user_train_data = get_train_data(user_train)
     user_test_data = get_test_data(user_train, user_test)
-
+   
     vocab = Vocab(user_test_data)
     user_test_data_output = get_test_data_output(vocab, user_test_data)
 
     rng = random.Random(random_seed)
 
     output_filename = output_dir + dataset_name + version_id + '.train.tfrecord'
-    generate_train_files(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size)
+    generate_train_file(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size)
 
     output_filename = output_dir + dataset_name + version_id + '.test.tfrecord'
-    generate_test_files(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq)
+    generate_test_file(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq)
 
     show_info_vocab(vocab)
     
@@ -166,5 +190,52 @@ def main():
     print(colored(f'Готово за {end_time - start_time:.2f} секунд', 'green', attrs=['bold']))
 
 
+def gen_file_for_predict():
+
+    start_time = time.time()
+
+    output_dir = PARAMETERS['output_dir'] # Путь папке с данными
+    dataset_name = PARAMETERS['dataset_name'] # Название датасета
+    version_id = PARAMETERS['version_id'] # ID версии
+
+    max_seq_length = PARAMETERS['max_seq_length'] # Максимальная длина последовательности
+    max_predictions_per_seq = PARAMETERS['max_predictions_per_seq'] # Максимальное кол-во прогнозов в последовательности
+
+    
+    if not os.path.isdir(output_dir):
+        print(output_dir + ' is not exist')
+        print(os.getcwd())
+        exit(1)
+
+    dataset = data_partition(output_dir+dataset_name+'.txt')
+
+    # User Train - содержит последовательности всех пользователей, только последние два элемента полседовательности стираются
+    # User Valid - содержит только предпоследний элемент полседовательности всех пользователей
+    # User Train - содержит только последний элемент полседовательности всех пользователей
+    # Usernum - последний id пользователя
+    # Itemnum - кол-во элементов всех пользователей
+    [user_train, user_valid, user_test, usernum, itemnum] = dataset 
+    user_history = read_data(output_dir+'user_history.txt')
+
+    # Запуск проверки подлинности в тренировке (Непонятно зачем нужен этот цикл)
+    for u in user_train:
+        if u in user_valid: # Это странно работает O_o
+            user_train[u].extend(user_valid[u])
+
+    show_info_dataset(user_train, user_valid, user_test, usernum, itemnum)
+
+    user_test_data = get_test_data(user_train, user_test)
+    user_history_data = get_his_data(user_history)
+
+    vocab = Vocab(user_test_data)
+
+    output_filename = output_dir + dataset_name + version_id + '.predict.tfrecord'
+    generate_predict_file(user_history_data, output_filename, vocab, max_seq_length, max_predictions_per_seq)
+
+    end_time = time.time()
+    print(colored(f'Готово за {end_time - start_time:.2f} секунд', 'green', attrs=['bold']))
+
 if __name__ == "__main__":
-    main()
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG) # Установка вывода логов в консоль от tensorflow
+    # gen_files_for_train()
+    gen_file_for_predict()

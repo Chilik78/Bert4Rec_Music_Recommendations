@@ -62,7 +62,7 @@ def write_instance_to_example_files(instances, max_seq_length, max_predictions_p
         features["masked_lm_weights"] = create_float_feature(masked_lm_weights)
 
         tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-
+        
         writers[writer_index].write(tf_example.SerializeToString())
         writer_index = (writer_index + 1) % len(writers)
 
@@ -89,6 +89,63 @@ def write_instance_to_example_files(instances, max_seq_length, max_predictions_p
         writer.close()
 
     tf.compat.v1.logging.info("Wrote %d total instances", total_written)
+
+
+def write_instance_to_predict_files(instance, output_filename, vocab, max_seq_length, max_predictions_per_seq):
+    writer = tf.compat.v1.python_io.TFRecordWriter(output_filename)
+
+    try:
+        input_ids = vocab.convert_tokens_to_ids(instance.tokens)
+    except:
+        print(instance)
+
+    input_mask = [1] * len(input_ids)
+    assert len(input_ids) <= max_seq_length
+
+    input_ids += [0] * (max_seq_length - len(input_ids))
+    input_mask += [0] * (max_seq_length - len(input_mask))
+
+    assert len(input_ids) == max_seq_length
+    assert len(input_mask) == max_seq_length
+
+    masked_lm_positions = list(instance.masked_lm_positions)
+    masked_lm_ids = vocab.convert_tokens_to_ids(["[MASK]"])
+    masked_lm_weights = [1.0] * len(masked_lm_ids)
+
+    masked_lm_positions += [0] * (max_predictions_per_seq - len(masked_lm_positions))
+    masked_lm_ids += [0] * (max_predictions_per_seq - len(masked_lm_ids))
+    masked_lm_weights += [0.0] * (max_predictions_per_seq - len(masked_lm_weights))
+
+    features = collections.OrderedDict()
+    features["info"] = create_int_feature(instance.info)
+    features["input_ids"] = create_int_feature(input_ids)
+    features["input_mask"] = create_int_feature(input_mask)
+    features["masked_lm_positions"] = create_int_feature(masked_lm_positions)
+    features["masked_lm_ids"] = create_int_feature(masked_lm_ids)
+    features["masked_lm_weights"] = create_float_feature(masked_lm_weights)
+
+    tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+    
+    writer.write(tf_example.SerializeToString())
+
+    tf.compat.v1.logging.info("*** Example ***")
+    tokens_in_string = " ".join([str(x) for x in instance.tokens])
+    tf.compat.v1.logging.info("tokens: " + tokens_in_string)
+
+    for feature_name in features.keys():
+        feature = features[feature_name]
+        values = []
+        if feature.int64_list.value:
+            values = feature.int64_list.value
+        elif feature.float_list.value:
+            values = feature.float_list.value
+
+
+        values_in_string = " ".join([str(x) for x in values])
+        tf.compat.v1.logging.info(f"{feature_name}: " + values_in_string)
+
+
+    writer.close()
 
 
 def write_other_files(data, text, filename)->None:

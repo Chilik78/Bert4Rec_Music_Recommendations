@@ -1,5 +1,6 @@
-from .write_in_files import write_instance_to_example_files
+from .write_in_files import write_instance_to_example_files, write_instance_to_predict_files
 from .TrainingInstance import TrainingInstance
+from .PredictInstance import PredictInstance
 from termcolor import colored
 import tensorflow as tf
 from vocab import Vocab
@@ -296,7 +297,7 @@ def gen_samples(data, output_filename, rng, dupe_factor, vocab, max_seq_length, 
     write_instance_to_example_files(instances, max_seq_length, max_predictions_per_seq, vocab, [output_filename])
 
 
-def generate_train_files(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size)->None:
+def generate_train_file(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size)->None:
     print(colored('Начало генерации тренировочных данных', 'yellow', attrs=['bold']))
     gen_samples(user_train_data, output_filename, 
                 rng, dupe_factor, vocab,  
@@ -305,10 +306,50 @@ def generate_train_files(user_train_data, output_filename, rng, dupe_factor, voc
     print(colored(f'Файл с тренировочными данными: {output_filename}', 'green', attrs=['underline']))
 
 
-def generate_test_files(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq)->None:
+def generate_test_file(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq)->None:
     print(colored('Начало генерации тестовых данных', 'yellow', attrs=['bold']))
     gen_samples(user_test_data, output_filename, 
                 rng, None, vocab, 
                 max_seq_length, max_predictions_per_seq, None, None,
                 None, None, force_last=True)
     print(colored(f'Файл с тестовыми данными: {output_filename}', 'green', attrs=['underline']))
+
+
+def create_predict_instance(user_hist_data, output_filename, vocab, max_seq_length):
+    user = list(user_hist_data.keys())[0]
+
+    tokens = user_hist_data[user]
+    
+    assert len(tokens) >= 1
+
+    tokens.append('[MASK]')
+    masked_lm_positions = len(tokens) - 1
+
+    info = [int(user.split("_")[1])]
+    instance = PredictInstance(
+        info=info,
+        tokens=tokens,
+        masked_lm_positions=[masked_lm_positions])
+    
+    return instance
+
+
+def gen_predict_samples(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq):
+    '''
+    
+        Создает "Экземпляр для прогнозирования" для последовательности пользователя и сохраняет результаты в 
+        'название папки с данными'/'название файла'.predict.tfrecord
+
+    '''
+    instance = create_predict_instance(user_hist_data, output_filename, vocab, max_seq_length)
+
+    tf.compat.v1.logging.info("*** Writing to output files ***")
+    tf.compat.v1.logging.info("  %s", output_filename)
+
+    write_instance_to_predict_files(instance, output_filename, vocab, max_seq_length, max_predictions_per_seq)
+
+
+def generate_predict_file(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq)->None:
+    print(colored('Начало генерации файлы с данными истории пользователя', 'yellow', attrs=['bold']))
+    gen_predict_samples(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq)
+    print(colored(f'Файл с данными истории пользователя: {output_filename}', 'green', attrs=['underline']))
