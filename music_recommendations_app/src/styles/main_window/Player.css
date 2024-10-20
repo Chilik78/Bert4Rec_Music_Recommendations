@@ -1,0 +1,117 @@
+#player{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#control-and-info-music{
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    margin-left: 3em;
+    gap: 4em;
+}
+
+#controllers{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#previous-track-btn, #play-btn, #pause-btn, #next-track-btn{
+    cursor: pointer; 
+}
+
+#previous-track-btn path, line, #play-btn path, #pause-btn path, #next-track-btn path, line{
+    transition-duration: .5s;
+}
+
+#previous-track-btn:hover path, #play-btn:hover path, #pause-btn:hover path, #next-track-btn:hover path{
+    fill: white;
+}
+
+#previous-track-btn:hover line, #next-track-btn:hover line{
+    stroke: white;
+}
+
+#playback-modes{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5em;
+}
+
+#repeat-btn, #shuffle-btn{
+    cursor: pointer; 
+}
+
+#repeat-btn path, #shuffle-btn path{
+    transition-duration: .5s;
+}
+
+#repeat-btn:hover path, #shuffle-btn:hover path{
+    fill: white;
+}
+
+#music-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2em;
+}
+
+#music-info-img{
+    border: 2px solid #C115AA;
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+#music-info-text{
+    max-width: 30em;
+}
+
+#music-info-text h1{
+    font-size: 20px;
+    font-weight: bold;
+    color: #2F2C2C;
+    user-select: auto;
+    -webkit-text-stroke: 2px #C115AA;
+    paint-order: stroke fill;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#music-info-text p{
+    font-size: 15px;
+    color: #AFADAD;
+    text-align: right;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#music-evaluation{
+    display: flex;
+    align-items: center;
+    gap: .5em;
+    margin-right: 3em;
+}
+
+#music-evaluation svg{
+    cursor: pointer;
+}
+
+#like path, #dislike path, #volume path{
+    transition-duration: .5s;
+}
+
+#volume:hover path{
+    fill: white;
+}
+
+#like:hover path, #dislike:hover path, #dislike:hover line{
+    stroke: white;
+}

@@ -1,0 +1,131 @@
+.registration, .entry{
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 25vh;
+    position: absolute;
+}
+
+form{
+    align-items: center;
+}
+
+img{
+    width: 89px;
+    height: 96px; 
+    margin-top: 10px;
+}
+
+#arrow-back{
+    color: #928D8D;
+    position: absolute;
+    margin: 27vh 0 0 42%;
+    z-index: 1;
+    cursor: pointer;
+    transition-duration: .5s;
+}
+
+#arrow-back:hover{
+    color: white;
+}
+
+#choose-input-type-container{
+    border-radius: 27px;
+    margin-top: 10px;
+    width: auto;
+    border: 2px solid #C115AA;
+    display: flex;
+    flex-direction: row;
+    row-gap: 1em;
+}
+
+.choose-input-type-btn{
+    color: #AFADAD;
+    background-color: transparent;
+    border-radius: 27px;
+    margin: .1em .2em .1em .2em;
+    padding: 1em 2em 1em 2em;
+    font-size: 16px;
+    font-weight: bold;
+    transition-duration: .5s;
+}
+
+.choose-input-type-btn:focus{
+    color: white;
+    background-color: #625D5D;
+}
+
+#inputs-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5em;
+    margin-top: 10px;
+    padding: 0 2em 0 2em;
+}
+
+.input-form{
+    border: 2px solid #928D8D;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: .8em .5em .8em .5em;
+    border-radius: 20px;
+    transition: .5s;
+    background-color: transparent;
+    width: 110%;
+}
+
+.input-form, #input-form-tel{ 
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.input-form::placeholder{
+    color: #AFADAD;
+}
+
+.input-form:focus{
+    border-color: white;
+}
+
+#btn-authentication{
+    color: white;
+    background-color: #928D8D;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: .5em 2em .5em 2em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition-duration: .5s;
+    text-decoration: none;
+}
+
+#btn-authentication:hover{
+    background-color: #b1acac;
+}
+
+#text-for-reg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #AFADAD;
+    gap: .3em;
+}
+
+#clickable-text-for-reg{
+    color: #d2d0d0;
+    text-decoration: underline;
+    cursor: pointer;
+    transition-duration: .5s;
+}
+
+#clickable-text-for-reg:hover{
+    color: white;
+}

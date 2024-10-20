@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/Inter-VariableFon.ttf');
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Inter';
+    overflow-x: hidden;
+}
+
+body{
+    background-color: #3A3838;
+}
+
+form{
+    background-color: #4C4949;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+h1{
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    user-select: none;
+}
+
+h2{
+    user-select: none;
+}
+
+input{
+    background-color: transparent;
+    border-color: transparent;
+    outline: none;
+}
+
+span{
+    color: white;
+}
+
+button{
+    outline: none;
+    border-color: transparent;
+}
