@@ -5,3 +5,8 @@ class Music(BaseModel):
     track:str
     artist:str
     genre:str
+
+class InsertMusic(BaseModel):
+    track:str
+    artist:str
+    genre:str

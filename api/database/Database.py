@@ -88,6 +88,16 @@ class Database():
         sql = f"SELECT COUNT(*) FROM {table} WHERE id = '{id}'"
         result = not not self.__fetch_one(sql)[0]
         return result
+    
+    def is_exist_in_column(self, id:str, tableName:str, columnName:str) -> bool:
+        sql = f"SELECT CASE WHEN EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{id}') THEN 1 ELSE 0 END AS exist"
+        result = self.__fetch_one(sql) 
+        return result
+    
+    def select_last_entry(self, tableName:str, columnNameWhere:str, columnNameOrderBy:str, id:str) -> list:
+        sql = f"SELECT * FROM {tableName} WHERE {columnNameWhere} = '{id}' ORDER BY {columnNameOrderBy} DESC LIMIT 1"
+        result = self.__fetch_one(sql) 
+        return result
         
     def __execute(self, sql:str, params:tuple = ()):
         try:
@@ -201,6 +211,18 @@ class Database():
         result = self.__fetch_all(sql)
         return result
 
+    def getAllUniqValuesFromTablesColumn(self, tableName, columnName)->list:
+        '''Функция получения уникальных значений в столбце таблицы
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя колонки
+        '''
+        sql = f"SELECT DISTINCT {columnName} FROM {tableName}"
+        result = self.__fetch_all(sql)
+        return result
+    
     @property
     def getTablesName(self) -> list:
         '''Таблицы'''
