@@ -185,6 +185,17 @@ class Database():
         '''
         self.dropTable(tableName)
         self.__create_table(tableName)
+    
+    def getAllUserId(self)->list:
+        sql = f"SELECT id FROM user"
+        result = self.__fetch_all(sql)
+        return result
+    
+    def getAllMusicId(self)->list:
+        sql = f"SELECT id FROM music"
+        result = self.__fetch_all(sql)
+        return result
+
 
     def getAllRecordsTable(self, tableName)->list:
         '''Функция получения всех данных таблицы
