@@ -1,0 +1,5 @@
+@import url(window/FirstEntryWindow.css);
+
+#window::-webkit-scrollbar{
+    display: none;
+}

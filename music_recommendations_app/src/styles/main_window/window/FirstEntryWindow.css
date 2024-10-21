@@ -1,0 +1,115 @@
+#first-entry-window{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#first-entry-window h1{
+    margin-top: 5vh;
+    font-size: 28px;
+}
+
+#genre-buttons-list{
+    margin: 13vh 5vw 10vh 5vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    padding: .7em;
+}
+
+.genre-btn, .genre-btn-selected{
+    background-color: #2f2c2c6a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: .5em;
+    width: 9em;
+    height: 9em;
+    cursor: pointer; 
+    transition-duration: .5s;
+}
+
+.genre-btn svg, .genre-btn-selected svg{
+    width: 50px;
+    height: 50px;
+}
+
+.genre-btn svg, .genre-btn svg path{
+    fill: #AFADAD;
+}
+
+.genre-btn h2, .genre-btn-selected h2{
+    font-size: 17px;
+    font-weight: bold;
+    color: #AFADAD;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+}
+
+.genre-btn h2, .genre-btn svg, .genre-btn svg path, .genre-btn-selected h2, .genre-btn-selected svg, .genre-btn-selected svg path{
+    transition-duration: .2s;
+}
+
+.genre-btn:hover{
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5)
+}
+
+.genre-btn:hover svg, .genre-btn:hover svg path, .genre-btn:hover h2{
+    fill: white;
+    color: white;
+}
+
+.genre-btn:active{
+    box-shadow: 0px 5px 10px 0px #C115AA;
+}
+
+.genre-btn-selected{
+    box-shadow: 0px 0px 10px 0px #C115AA;
+}
+
+.genre-btn-selected h2{
+    color: #C115AA;
+}
+
+.genre-btn-selected svg, .genre-btn-selected svg path{
+    fill: #C115AA;
+}
+
+#btn-done{
+    color: white;
+    background-color: #928D8D;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: .5em 2em .5em 2em;
+    margin-bottom: 2em;
+    cursor: pointer;
+    transition-duration: .5s;
+    text-decoration: none;
+}
+
+#btn-done:hover{
+    background-color: #b1acac;
+}
+
+#arrow-down{
+    position: absolute;
+    width: 3em;
+    height: 3em;
+    cursor: pointer;
+    display: flex;
+    align-self: flex-end;
+    margin-top: 65vh; 
+}
+
+#arrow-down path{
+    fill: #C115AA;
+    transition-duration: .5s;
+}
+
+#arrow-down:hover path{
+    fill: white;
+}
