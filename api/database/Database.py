@@ -44,7 +44,7 @@ class Database():
             - email
             - password
         '''
-        uid = str(uuid.uuid4().int)
+        uid = str(uuid.uuid4())
         sql = f"INSERT INTO user (id, name, phone_number, email, password) VALUES ('{uid}', ?, ?, ?, ?)"
         self.__execute(sql, params)
         
@@ -62,7 +62,7 @@ class Database():
             - artist
             - genre
         '''
-        uid = str(uuid.uuid4().int)
+        uid = str(uuid.uuid4())
         sql = f"INSERT INTO music (id, track, artist, genre) VALUES ('{uid}', ?, ?, ?)"
         self.__execute(sql, params)
         
