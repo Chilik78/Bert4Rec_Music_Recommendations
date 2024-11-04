@@ -11,8 +11,8 @@ import os
 
 
 PARAMETERS = {
-    "output_dir": './data/steam/', # Путь папке с данными
-    "dataset_name": 'steam', # Название датасета
+    "output_dir": './data/music/', # Путь папке с данными
+    "dataset_name": 'music', # Название датасета
     "version_id": '', # ID версии
     "random_seed": 12345,
     "dupe_factor": 10, # Кол-во клонирования данных пользователей
@@ -237,5 +237,5 @@ def gen_file_for_predict():
 
 if __name__ == "__main__":
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG) # Установка вывода логов в консоль от tensorflow
-    # gen_files_for_train()
-    gen_file_for_predict()
+    gen_files_for_train()
+    # gen_file_for_predict()

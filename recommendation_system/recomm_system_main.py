@@ -34,13 +34,34 @@ import os
 # mode_recomm_system = "PREDICT" # Режим работы рекомендательной системы (TRAIN, EVAL, PREDICT)
 
 
-bert_config_file = 'data/ml-1m/bert_config_ml-1m_64.json' # Файл конфигурации гиперпараметров модели
-checkpoint_dir = os.path.normpath('/models/ml-1m') # Файл для сохранения прогресса при тренировке модели
-train_input_file = 'data/ml-1m/ml-1m.train.tfrecord' # Файл с тренировочными данными
-test_input_file = 'data/ml-1m/ml-1m.test.tfrecord' # Файл с тестовыми данными
-predict_input_file = 'data/ml-1m/ml-1m.predict.tfrecord'
-vocab_filename = 'data/ml-1m/ml-1m.vocab' # Файл словаря
-user_history_filename = 'data/ml-1m/ml-1m.his'
+# bert_config_file = 'data/ml-1m/bert_config_ml-1m_64.json' # Файл конфигурации гиперпараметров модели
+# checkpoint_dir = os.path.normpath('/models/ml-1m') # Файл для сохранения прогресса при тренировке модели
+# train_input_file = 'data/ml-1m/ml-1m.train.tfrecord' # Файл с тренировочными данными
+# test_input_file = 'data/ml-1m/ml-1m.test.tfrecord' # Файл с тестовыми данными
+# predict_input_file = 'data/ml-1m/ml-1m.predict.tfrecord'
+# vocab_filename = 'data/ml-1m/ml-1m.vocab' # Файл словаря
+# user_history_filename = 'data/ml-1m/ml-1m.his'
+# save_checkpoints_steps = 1000 # Через сколько шагов делать чекпоинт
+# init_checkpoint = None
+# learning_rate = 1e-4
+# num_train_steps = 100000 # Кол-во максимальных шагов при тренировке 
+# num_warmup_steps = 100
+# use_tpu = False
+# batch_size = 32
+# max_seq_length = 128 # Максимальный размер последовательности
+# max_predictions_per_seq = 20 # Максимальное кол-во прогнозов в последовательности 
+# use_pop_random = True
+# mode_recomm_system = "PREDICT" # Режим работы рекомендательной системы (TRAIN, EVAL, PREDICT)
+
+
+
+bert_config_file = 'data/music/bert_config_music_64.json' # Файл конфигурации гиперпараметров модели
+checkpoint_dir = os.path.normpath('/models/music') # Файл для сохранения прогресса при тренировке модели
+train_input_file = 'data/music/music.train.tfrecord' # Файл с тренировочными данными
+test_input_file = 'data/music/music.test.tfrecord' # Файл с тестовыми данными
+predict_input_file = 'data/music/music.predict.tfrecord'
+vocab_filename = 'data/music/music.vocab' # Файл словаря
+user_history_filename = 'data/music/music.his'
 save_checkpoints_steps = 1000 # Через сколько шагов делать чекпоинт
 init_checkpoint = None
 learning_rate = 1e-4
@@ -51,7 +72,8 @@ batch_size = 32
 max_seq_length = 128 # Максимальный размер последовательности
 max_predictions_per_seq = 20 # Максимальное кол-во прогнозов в последовательности 
 use_pop_random = True
-mode_recomm_system = "PREDICT" # Режим работы рекомендательной системы (TRAIN, EVAL, PREDICT)
+mode_recomm_system = "TRAIN" # Режим работы рекомендательной системы (TRAIN, EVAL, PREDICT)
+
 
 
 
@@ -362,7 +384,7 @@ def run_system(train_input_files, test_input_files, predict_input_files, estimat
 
 
 def main(_):
-    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.FATAL) # Установка вывода логов в консоль от tensorflow
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO) # Установка вывода логов в консоль от tensorflow
 
     bert_config = BertConfig.from_json_file(bert_config_file)
 
