@@ -4,6 +4,7 @@ import '../../../styles/authentication/Form.css';
 import { Component } from 'react';
 import { Circle } from '../../Circle';
 import { Link } from 'react-router-dom';
+import { getUserExist, RegistrationUser } from '../../../scripts/backend/user';
 
 class Form extends Component{
 
@@ -18,6 +19,8 @@ class Form extends Component{
         };
 
         this.SwitchChooseEntry = this.#SwitchChooseEntry.bind(this);
+        this.Enter = this.#Enter.bind(this);
+        this.Registration = this.#Registration.bind(this);
     }
 
     render(){
@@ -31,7 +34,7 @@ class Form extends Component{
                     <section id='inputs-form'>
                         {this.inputsInfo.map((info) => this.#getInputForm(this.className, info))}
                     </section>
-                    <Link to="/main" id='btn-authentication' style={{padding: this.#getPaddingAuthButton()}}>{this.#getTextAuthenticationBtn()}</Link>
+                    <button onClick={this.className === 'entry' ? this.Enter : this.Registration} id='btn-authentication' style={{padding: this.#getPaddingAuthButton()}} type='button'>{this.#getTextAuthenticationBtn()}</button>
                     {this.#getTextForReg()}
                 </form>
 
@@ -74,9 +77,11 @@ class Form extends Component{
     #getInputForm(className, info){
 
         if(className === 'entry' && info.type === 'tel' && this.state.isChooseTel === true)
-            return <input className='input-form' type={info.type} placeholder={info.hintText} />
+            return <input id={info.type} key={info.type} className='input-form' type={info.type} placeholder={info.hintText} />
         else if(className === 'entry' && info.type !== 'tel' && this.state.isChooseTel === false)
-            return <input className='input-form' type={info.type} placeholder={info.hintText} />
+            return <input id={info.type} key={info.type} className='input-form' type={info.type} placeholder={info.hintText} />
+        else if(className === 'entry' && info.type === 'password')
+            return <input id={info.type} key={info.type} className='input-form' type={info.type} placeholder={info.hintText} />
         else if(className !== 'entry')
             return <input key={info.id} className='input-form' type={info.type} placeholder={info.hintText} />
     }
@@ -114,11 +119,11 @@ class Form extends Component{
                     <Circle size='100px' zIndex='-1' margin='32vh 0 0 56.5%'/>
 
                     {/* Левый нижний угол формы */}
-                    <Circle size='100px' zIndex='-1' margin='69vh 0 0 38.8%'/>
+                    <Circle size='100px' zIndex='-1' margin='80vh 0 0 38.8%'/>
 
                     {/* Правый нижний угол формы */}
-                    <Circle size='49px' zIndex='-1' margin='74vh 0 0 57.6%'/>
-                    <Circle size='26px' zIndex='-1' margin='79vh 0 0 56.8%'/>
+                    <Circle size='49px' zIndex='-1' margin='83vh 0 0 57.6%'/>
+                    <Circle size='26px' zIndex='-1' margin='87vh 0 0 56.8%'/>
                 </>
             );
 
@@ -142,10 +147,55 @@ class Form extends Component{
                 <Circle size='49px' zIndex='-1' margin='86vh 0 0 40.6%'/>
 
                 {/* Правый нижний угол формы */}
-                <Circle size='26px' zIndex='-1' margin='90vh 0 0 54%'/>
-                <Circle size='26px' zIndex='-1' margin='89vh 0 0 55.6%'/>
+                <Circle size='26px' zIndex='-1' margin='89vh 0 0 54%'/>
+                <Circle size='26px' zIndex='-1' margin='88vh 0 0 55.6%'/>
             </>
         )
+    }
+
+    async #Enter(){
+        let loginData;
+        let colName;
+
+        if(this.state.isChooseTel === true){
+            loginData = document.getElementById("tel").value;
+            colName = "phone_number";
+        }
+        else{
+            loginData = document.getElementById("email").value;
+            colName = "email";
+        }
+
+        // let passwordData = document.getElementById("password").value;
+
+        let result = await getUserExist({"columnName": colName, "value": loginData});
+
+        if(result === true){
+            window.location.assign('/main');
+        }
+
+        console.log(`Результат: ${result}`);
+    }
+
+    async #Registration(){
+
+        let inputs = document.querySelectorAll(".input-form");
+
+        let data = {"text": "", "email": "", "tel": "",  "password": ""}
+
+        inputs.forEach(input =>{
+            data[input.type] = input.value
+        });
+
+        await RegistrationUser(
+            {
+                "name": data["text"], 
+                "phone": data["tel"], 
+                "email": data["email"], 
+                "password": data["password"]
+            }
+        );
+        window.location.assign('/main');
     }
 }
 

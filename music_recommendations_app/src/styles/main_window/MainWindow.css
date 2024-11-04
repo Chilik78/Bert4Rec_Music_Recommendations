@@ -16,7 +16,7 @@
 #sidebar{
     width: 21vw;
     height: 100vh;
-    border-right: solid #C115AA;
+    border-right: solid var(--primary-purple-color);
     border-top-right-radius: 50px;
 }
 
@@ -28,5 +28,5 @@
 #player{
     width: 79vw;
     height: 15vh;
-    border-top: solid #C115AA;
+    border-top: solid var(--primary-purple-color);
 }

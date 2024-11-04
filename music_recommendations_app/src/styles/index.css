@@ -3,6 +3,16 @@
     src: url('../assets/fonts/Inter-VariableFon.ttf');
 }
 
+:root{
+    --primary-bg-color: #3A3838;
+    --form-bg-color: #4C4949;
+    --primary-purple-color: #C115AA;
+    --primary-text-color: white;
+    --primary-svg-color: white;
+    --primary-unselected-color: #AFADAD;
+    --primary-selected-color: white;
+}
+
 *{
     box-sizing: border-box;
     margin: 0;
@@ -11,18 +21,18 @@
 }
 
 body{
-    background-color: #3A3838;
+    background-color: var(--primary-bg-color);
 }
 
 form{
-    background-color: #4C4949;
+    background-color: var(--form-bg-color);
     border-radius: 50px;
     display: flex;
     flex-direction: column;
 }
 
 h1{
-    color: white;
+    color: var(--primary-text-color);
     font-size: 24px;
     font-weight: bold;
     user-select: none;
@@ -39,7 +49,7 @@ input{
 }
 
 span{
-    color: white;
+    color: var(--primary-text-color);
 }
 
 button{

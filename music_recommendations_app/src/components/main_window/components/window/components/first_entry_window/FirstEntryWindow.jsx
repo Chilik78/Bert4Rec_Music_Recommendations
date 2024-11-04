@@ -528,7 +528,7 @@ class FirstEntryWindow extends Component{
 
             "videogame": <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
                             <path class="st0" d="M18,16l8.1-8.1C23.8,4.9,20.1,3,16,3C8.8,3,3,8.8,3,16s5.8,13,13,13c4.1,0,7.8-1.9,10.1-4.9L18,16z"/>
-                            <circle stroke='white' class="st0" cx="14" cy="11" r="2"/>
+                            <circle stroke='var(--primary-svg-color)' class="st0" cx="14" cy="11" r="2"/>
                          </svg>,
 
             "christmas": <svg width="800px" height="800px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg">

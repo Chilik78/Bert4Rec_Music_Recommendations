@@ -17,6 +17,11 @@ export function Entry(){
                         type: 'tel',
                         hintText: 'Телефон',
                     },
+                    {
+                        id: 2,
+                        type: 'password',
+                        hintText: 'Пароль',
+                    },
                 ]} 
             />
         </>

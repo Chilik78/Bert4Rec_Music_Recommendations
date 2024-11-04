@@ -38,13 +38,13 @@
 }
 
 .genre-btn svg, .genre-btn svg path{
-    fill: #AFADAD;
+    fill: var(--primary-unselected-color);
 }
 
 .genre-btn h2, .genre-btn-selected h2{
     font-size: 17px;
     font-weight: bold;
-    color: #AFADAD;
+    color: var(--primary-unselected-color);
     text-overflow: ellipsis;
     text-wrap: nowrap;
 }
@@ -58,28 +58,28 @@
 }
 
 .genre-btn:hover svg, .genre-btn:hover svg path, .genre-btn:hover h2{
-    fill: white;
-    color: white;
+    fill: var(--primary-svg-color);
+    color: var(--primary-text-color);
 }
 
 .genre-btn:active{
-    box-shadow: 0px 5px 10px 0px #C115AA;
+    box-shadow: 0px 5px 10px 0px var(--primary-purple-color);
 }
 
 .genre-btn-selected{
-    box-shadow: 0px 0px 10px 0px #C115AA;
+    box-shadow: 0px 0px 10px 0px var(--primary-purple-color);
 }
 
 .genre-btn-selected h2{
-    color: #C115AA;
+    color: var(--primary-purple-color);
 }
 
 .genre-btn-selected svg, .genre-btn-selected svg path{
-    fill: #C115AA;
+    fill: var(--primary-purple-color);
 }
 
 #btn-done{
-    color: white;
+    color: var(--primary-text-color);
     background-color: #928D8D;
     border-radius: 30px;
     font-size: 20px;
@@ -106,10 +106,10 @@
 }
 
 #arrow-down path{
-    fill: #C115AA;
+    fill: var(--primary-purple-color);
     transition-duration: .5s;
 }
 
 #arrow-down:hover path{
-    fill: white;
+    fill: var(--primary-svg-color);
 }

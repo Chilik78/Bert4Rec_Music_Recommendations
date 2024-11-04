@@ -16,7 +16,7 @@ img{
 }
 
 #arrow-back{
-    color: #928D8D;
+    color: var(--primary-unselected-color);
     position: absolute;
     margin: 27vh 0 0 42%;
     z-index: 1;
@@ -25,21 +25,21 @@ img{
 }
 
 #arrow-back:hover{
-    color: white;
+    color: var(--primary-svg-color);
 }
 
 #choose-input-type-container{
     border-radius: 27px;
     margin-top: 10px;
     width: auto;
-    border: 2px solid #C115AA;
+    border: 2px solid var(--primary-purple-color);
     display: flex;
     flex-direction: row;
     row-gap: 1em;
 }
 
 .choose-input-type-btn{
-    color: #AFADAD;
+    color: var(--primary-unselected-color);
     background-color: transparent;
     border-radius: 27px;
     margin: .1em .2em .1em .2em;
@@ -47,10 +47,11 @@ img{
     font-size: 16px;
     font-weight: bold;
     transition-duration: .5s;
+    cursor: pointer;
 }
 
 .choose-input-type-btn:focus{
-    color: white;
+    color: var(--primary-text-color);
     background-color: #625D5D;
 }
 
@@ -78,19 +79,19 @@ img{
 .input-form, #input-form-tel{ 
     font-size: 20px;
     font-weight: bold;
-    color: white;
+    color: var(--primary-text-color);
 }
 
 .input-form::placeholder{
-    color: #AFADAD;
+    color: var(--primary-unselected-color);
 }
 
 .input-form:focus{
-    border-color: white;
+    border-color: var(--primary-selected-color);
 }
 
 #btn-authentication{
-    color: white;
+    color: var(--primary-text-color);
     background-color: #928D8D;
     border-radius: 30px;
     font-size: 20px;
@@ -115,7 +116,7 @@ img{
     margin-bottom: 10px;
     font-size: 16px;
     font-weight: bold;
-    color: #AFADAD;
+    color: var(--primary-unselected-color);
     gap: .3em;
 }
 
@@ -127,5 +128,5 @@ img{
 }
 
 #clickable-text-for-reg:hover{
-    color: white;
+    color: var(--primary-text-color);
 }
