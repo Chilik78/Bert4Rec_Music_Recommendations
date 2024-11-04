@@ -1,13 +1,13 @@
 import FirstEntryWindow from "./components/first_entry_window/FirstEntryWindow";
 import '../../../../styles/main_window/Window.css';
 import { Component } from "react";
-import { isFirstEntryUser } from "../../../../scripts/backend/user.js";
 
 class Window extends Component{
 
     constructor(props){
         super(props);
         this.userID = props.userID;
+        this.isFirstEntryUser = Boolean(props.isFirstEntryUser);
     }
 
     render(){
@@ -19,7 +19,8 @@ class Window extends Component{
     }
 
     #getWindow(){
-        if(isFirstEntryUser(this.userID)){
+
+        if(this.isFirstEntryUser === true){
             return <FirstEntryWindow />
         }
 

@@ -5,6 +5,7 @@ import { Component } from 'react';
 import { Circle } from '../../Circle';
 import { Link } from 'react-router-dom';
 import { getUserExist, RegistrationUser } from '../../../scripts/backend/user';
+import { isFirstEntryUser } from "../../../scripts/backend/user";
 
 class Form extends Component{
 
@@ -166,12 +167,13 @@ class Form extends Component{
             colName = "email";
         }
 
-        // let passwordData = document.getElementById("password").value;
+        let passwordData = document.getElementById("password").value;
 
-        let result = await getUserExist({"columnName": colName, "value": loginData});
+        let result = await getUserExist({"columnName": colName, "value": loginData, "password": passwordData});
 
-        if(result === true){
-            window.location.assign('/main');
+        if(result[0] === true){
+            let isFirstEntry = await isFirstEntryUser(this.userID);
+            window.location.assign(`/main?userID=${result[1]}&isFirstEntry=${isFirstEntry}`);
         }
 
         console.log(`Результат: ${result}`);
@@ -195,7 +197,10 @@ class Form extends Component{
                 "password": data["password"]
             }
         );
-        window.location.assign('/main');
+
+        let result = await getUserExist({"columnName": "email", "value": data["email"], "password": data["password"]});
+        let isFirstEntry = await isFirstEntryUser(this.userID);
+        window.location.assign(`/main?userID=${result[1]}&isFirstEntry=${isFirstEntry}`);
     }
 }
 

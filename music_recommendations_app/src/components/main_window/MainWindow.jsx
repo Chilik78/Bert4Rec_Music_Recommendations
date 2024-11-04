@@ -3,11 +3,25 @@ import '../../styles/main_window/MainWindow.css';
 import {Circle} from '../Circle'; 
 
 export function MainWindow(){
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let params = {};
+
+    urlParams.forEach((p, key) => {
+        params[key] = p;
+    });
+ 
+    let userID = params['userID'];
+    let isFirstEntry = params['isFirstEntry'];
+
+    console.log(userID);
+    console.log(isFirstEntry);
+
     return (
         <div id='main-window'>
             <Sidebar />
             <section id='window-and-player'>
-                <Window userID={0}/>
+                <Window userID={userID} isFirstEntryUser={isFirstEntry} />
                 <Player />
             </section>
 
