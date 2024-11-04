@@ -89,6 +89,11 @@ class Database():
         result = not not self.__fetch_one(sql)[0]
         return result
     
+    def is_exist_by_value(self, tableName:str, columnName:str, value) ->bool:
+        sql = f"SELECT EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{value}')"
+        result = not not self.__fetch_one(sql)[0] 
+        return result
+    
     def is_exist_in_column(self, id:str, tableName:str, columnName:str) -> bool:
         sql = f"SELECT CASE WHEN EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{id}') THEN 1 ELSE 0 END AS exist"
         result = self.__fetch_one(sql) 
@@ -223,6 +228,19 @@ class Database():
         result = self.__fetch_all(sql)
         return result
     
+    def getValuesFromTableById(self, tableName, columnName,id) -> list:
+        '''Функция получения данных таблицы по айдишнику
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя столбца
+             id - айдишник таблицы
+        '''
+        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{id}'"
+        result = self.__fetch_all(sql)
+        return result
+
     @property
     def getTablesName(self) -> list:
         '''Таблицы'''
