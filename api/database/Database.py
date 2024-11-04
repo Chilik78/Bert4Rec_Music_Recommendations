@@ -98,7 +98,7 @@ class Database():
         sql = f"SELECT CASE WHEN EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{id}') THEN 1 ELSE 0 END AS exist"
         result = self.__fetch_one(sql) 
         return result
-    
+
     def select_last_entry(self, tableName:str, columnNameWhere:str, columnNameOrderBy:str, id:str) -> list:
         sql = f"SELECT * FROM {tableName} WHERE {columnNameWhere} = '{id}' ORDER BY {columnNameOrderBy} DESC LIMIT 1"
         result = self.__fetch_one(sql) 
@@ -215,6 +215,20 @@ class Database():
         sql = f"SELECT * FROM {tableName}"
         result = self.__fetch_all(sql)
         return result
+
+    def getIdByValue(self, tableName, columnName, value)->list:
+        '''Функция получения айдишника 
+        
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя столбца
+             value - значение столбца
+        
+        '''
+        sql = f"SELECT id FROM {tableName} WHERE {columnName} = '{value}'"
+        result = self.__fetch_one(sql)
+        return result    
 
     def getAllUniqValuesFromTablesColumn(self, tableName, columnName)->list:
         '''Функция получения уникальных значений в столбце таблицы

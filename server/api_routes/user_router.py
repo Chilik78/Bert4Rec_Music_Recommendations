@@ -20,7 +20,11 @@ def select_route():
 def insert_route(new_user:InsertUser):
     vals = tuple(new_user.model_dump()[key] for key in InsertUser.model_fields.keys())
     db.insertDataInUser(vals)
-    
-@user_router.get('/is_exist_by_value')
-def is_exist_route(columnName: str, value):
-    return db.is_exist_by_value('user', columnName, value)
+
+@user_router.get('/is_exist_by_values')
+def is_exist_route(columnName: str, value, password):
+    res1 = db.is_exist_by_value('user', columnName, value)
+    res2 = db.is_exist_by_value('user', 'password', password)
+    res = res1 and res2
+    userId = db.getIdByValue('user', columnName, value)
+    return (res, userId[0])

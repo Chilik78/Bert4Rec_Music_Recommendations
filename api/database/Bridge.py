@@ -1,5 +1,6 @@
 import sqlite3
 from Database import Database
+import hashlib
 
 class Bridge():
     '''
@@ -21,16 +22,10 @@ class Bridge():
         '''Функция получения всех данных таблицы history
         
         '''
-        
+
         tupleDB = self.__db.getAllRecordsTable('history')
-        result = []
 
-        for i in tupleDB:
-            firstVal = int(i[0].replace('-', ''), 32)
-            secondVal = int(i[1].replace('-', ''), 32)
-            result.append((firstVal, secondVal))
-
-        return result
+        return self.getHashTuple(tupleDB)
     
     def getUserHistory(self, userId) -> tuple:
         '''Функция получения истории одного пользователя
@@ -40,12 +35,16 @@ class Bridge():
              userId - айдишник пользователя
         
         '''
-        tupleDB = self.__db.getValuesFromTableById('history','user_id', userId)
-        result = []
-        
-        for i in tupleDB:
-            firstVal = int(i[0].replace('-', ''), 32)
-            secondVal = int(i[1].replace('-', ''), 32)
-            result.append((firstVal, secondVal))
 
-        return result
+        tupleDB = self.__db.getValuesFromTableById('history','user_id', userId)
+
+        return self.getHashTuple(tupleDB)
+    
+    def getHashTuple(self, tupleDB: tuple) -> tuple:
+        result = []
+        for val in tupleDB:
+            hash_int_user = int.from_bytes(hashlib.sha256(val[0].encode()).digest()[:1], 'big')
+            hash_int_music = int.from_bytes(hashlib.sha256(val[1].encode()).digest()[:1], 'big')
+            result.append(( hash_int_user, hash_int_music))
+        return result    
+     

@@ -32,5 +32,7 @@ def start():
 
 start()
 
-
-
+#db = Database()
+# res1 = db.is_exist_by_value('user', 'phone_number ', '12345')
+# res2 = db.is_exist_by_value('user', 'password', '12345')
+# print(res1 and res2)
