@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 from api.database.Database import Database
 
 history_router = APIRouter()
@@ -9,10 +9,7 @@ db = Database()
 def select_route(user_id:str):
     status = db.is_exist_in_column(user_id,'history','user_id')
     result = status[0]
-    if result == 1:
-        return True
-    else:
-        return False
+    return result == 1
     
 @history_router.get('/select_user_last_music')
 def select_route(user_id:str):

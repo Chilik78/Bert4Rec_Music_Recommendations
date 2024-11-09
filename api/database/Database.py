@@ -242,16 +242,16 @@ class Database():
         result = self.__fetch_all(sql)
         return result
     
-    def getValuesFromTableById(self, tableName, columnName,id) -> list:
-        '''Функция получения данных таблицы по айдишнику
+    def getValuesFromTableById(self, tableName, columnName, value) -> list:
+        '''Функция получения данных таблицы по значению
 
             Параметры:
              ----------
              tableName - имя таблицы
              columnName - имя столбца
-             id - айдишник таблицы
+             value - значение в столбце
         '''
-        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{id}'"
+        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{value}'"
         result = self.__fetch_all(sql)
         return result
 

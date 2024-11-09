@@ -1,4 +1,3 @@
-import sqlite3
 from Database import Database
 import hashlib
 
@@ -15,8 +14,8 @@ class Bridge():
             ---------------
 
     '''
-    def __init__(self) -> None:
-        self.__db = Database()
+    def __init__(self, db=Database()) -> None:
+        self.__db = db
 
     def getAllHistory(self) -> tuple:
         '''Функция получения всех данных таблицы history
@@ -36,7 +35,7 @@ class Bridge():
         
         '''
 
-        tupleDB = self.__db.getValuesFromTableById('history','user_id', userId)
+        tupleDB = self.__db.getValuesFromTableById('history', 'user_id', userId)
 
         return self.getHashTuple(tupleDB)
     

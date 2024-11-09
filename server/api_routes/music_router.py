@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
 from api.database.Database import Database
-from server.api_models.music import InsertMusic, Music
+from server.api_models.music import InsertMusic
 
 music_router = APIRouter()
 
