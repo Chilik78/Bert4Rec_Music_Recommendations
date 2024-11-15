@@ -111,7 +111,7 @@ def create_instances_threading(all_documents, max_seq_length, masked_lm_prob, ma
     return instances
 
 
-def create_training_instances(all_documents_raw, max_seq_length, masked_lm_prob, mask_prob, max_predictions_per_seq, vocab, rng, dupe_factor, prop_sliding_window, pool_size, force_last=False):
+def create_training_instances(all_documents_raw, max_seq_length, masked_lm_prob, mask_prob, max_predictions_per_seq, vocab, rng, dupe_factor, prop_sliding_window, pool_size, logging, force_last=False):
     """
     
         Create `TrainingInstance`s from raw text.
@@ -152,7 +152,8 @@ def create_training_instances(all_documents_raw, max_seq_length, masked_lm_prob,
 
     instances = []
 
-    print(colored(f"Количество пользователей (документов): {len(all_documents)}", attrs=['bold']))
+    if(logging):
+        print(colored(f"Количество пользователей (документов): {len(all_documents)}", attrs=['bold']))
 
     if force_last:
         for user in all_documents: # Цикл создает "Обучающий экземпляр" для каждого пользователя
@@ -163,7 +164,9 @@ def create_training_instances(all_documents_raw, max_seq_length, masked_lm_prob,
         pool = multiprocessing.Pool(processes=pool_size)    
 
         def log_result(result):
-            print("callback function result type: {}, size: {} ".format(type(result), len(result)))
+            if(logging):
+                print("callback function result type: {}, size: {} ".format(type(result), len(result)))
+
             instances.extend(result)
 
         def error_call(error):
@@ -187,7 +190,8 @@ def create_training_instances(all_documents_raw, max_seq_length, masked_lm_prob,
 
     end_time = time.time()
 
-    print(colored(f"Количество экземпляров:{len(instances)}; Потрачено времени:{end_time - start_time:.2f} секунд", attrs=['bold']))
+    if(logging):
+        print(colored(f"Количество экземпляров:{len(instances)}; Потрачено времени:{end_time - start_time:.2f} секунд", attrs=['bold']))
 
     rng.shuffle(instances)
     return instances
@@ -278,7 +282,7 @@ def create_masked_lm_predictions_force_last(tokens):
     return (output_tokens, masked_lm_positions, masked_lm_labels)
 
 
-def gen_samples(data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size, force_last=False):
+def gen_samples(data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size, logging, force_last=False):
     '''
     
         Создает "Обучающий экземпляр" или "Тестовые данные" (работает от force_last) 
@@ -288,7 +292,7 @@ def gen_samples(data, output_filename, rng, dupe_factor, vocab, max_seq_length, 
     '''
     
     # Начало тренировки
-    instances = create_training_instances(data, max_seq_length, masked_lm_prob, mask_prob, max_predictions_per_seq, vocab, rng, dupe_factor, prop_sliding_window, pool_size, force_last)
+    instances = create_training_instances(data, max_seq_length, masked_lm_prob, mask_prob, max_predictions_per_seq, vocab, rng, dupe_factor, prop_sliding_window, pool_size, logging, force_last)
 
     tf.compat.v1.logging.info("*** Writing to output files ***")
     tf.compat.v1.logging.info("  %s", output_filename)
@@ -297,22 +301,30 @@ def gen_samples(data, output_filename, rng, dupe_factor, vocab, max_seq_length, 
     write_instance_to_example_files(instances, max_seq_length, max_predictions_per_seq, vocab, [output_filename])
 
 
-def generate_train_file(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size)->None:
-    print(colored('Начало генерации тренировочных данных', 'yellow', attrs=['bold']))
+def generate_train_file(user_train_data, output_filename, rng, dupe_factor, vocab, max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob, prop_sliding_window, pool_size, logging)->None:
+    if(logging):
+        print(colored('Начало генерации тренировочных данных', 'yellow', attrs=['bold']))
+
     gen_samples(user_train_data, output_filename, 
                 rng, dupe_factor, vocab,  
                 max_seq_length, max_predictions_per_seq, masked_lm_prob, mask_prob,
-                prop_sliding_window, pool_size, force_last=False)
-    print(colored(f'Файл с тренировочными данными: {output_filename}', 'green', attrs=['underline']))
+                prop_sliding_window, pool_size, logging, force_last=False)
+    
+    if(logging):
+        print(colored(f'Файл с тренировочными данными: {output_filename}', 'green', attrs=['underline']))
 
 
-def generate_test_file(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq)->None:
-    print(colored('Начало генерации тестовых данных', 'yellow', attrs=['bold']))
+def generate_test_file(user_test_data, output_filename, rng, vocab, max_seq_length, max_predictions_per_seq, logging)->None:
+    if(logging):
+        print(colored('Начало генерации тестовых данных', 'yellow', attrs=['bold']))
+
     gen_samples(user_test_data, output_filename, 
                 rng, None, vocab, 
                 max_seq_length, max_predictions_per_seq, None, None,
-                None, None, force_last=True)
-    print(colored(f'Файл с тестовыми данными: {output_filename}', 'green', attrs=['underline']))
+                None, None, logging, force_last=True)
+    
+    if(logging):
+        print(colored(f'Файл с тестовыми данными: {output_filename}', 'green', attrs=['underline']))
 
 
 def create_predict_instance(user_hist_data, output_filename, vocab, max_seq_length):
@@ -349,7 +361,11 @@ def gen_predict_samples(user_hist_data, output_filename, vocab, max_seq_length, 
     write_instance_to_predict_files(instance, output_filename, vocab, max_seq_length, max_predictions_per_seq)
 
 
-def generate_predict_file(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq)->None:
-    print(colored('Начало генерации файлы с данными истории пользователя', 'yellow', attrs=['bold']))
+def generate_predict_file(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq, logging)->None:
+    if(logging):
+        print(colored('Начало генерации файлы с данными истории пользователя', 'yellow', attrs=['bold']))
+
     gen_predict_samples(user_hist_data, output_filename, vocab, max_seq_length, max_predictions_per_seq)
-    print(colored(f'Файл с данными истории пользователя: {output_filename}', 'green', attrs=['underline']))
+
+    if(logging):
+        print(colored(f'Файл с данными истории пользователя: {output_filename}', 'green', attrs=['underline']))

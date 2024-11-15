@@ -148,7 +148,9 @@ def write_instance_to_predict_files(instance, output_filename, vocab, max_seq_le
     writer.close()
 
 
-def write_other_files(data, text, filename)->None:
-    print(colored(text, 'green', attrs=['underline']))
+def write_other_files(data, text, filename, logging)->None:
+    if(logging):
+        print(colored(text, 'green', attrs=['underline']))
+        
     with open(filename, 'wb') as output_file:
         pickle.dump(data, output_file, protocol=2)
