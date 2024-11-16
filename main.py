@@ -18,4 +18,5 @@ app.include_router(user_router, prefix='/users')
 app.include_router(music_router, prefix='/music')
 app.include_router(history_router, prefix='/history')
 
-uvicorn.run(app)
+if __name__ == '__main__':
+    uvicorn.run(app)
