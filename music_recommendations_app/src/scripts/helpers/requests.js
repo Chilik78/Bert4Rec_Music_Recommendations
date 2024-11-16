@@ -9,7 +9,7 @@ export async function SendReq({type="GET", url="/", data=undefined}){
     let response;
 
     if(type === "GET"){
-        data = typeof data === undefined ? "" : "?" + ConvertDataToString(data);
+        data = typeof data === "undefined" ? "" : "?" + ConvertDataToString(data);
         response = await fetch(url + data, {method: type});
     }
     else if(type === "POST"){

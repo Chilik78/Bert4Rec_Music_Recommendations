@@ -4,8 +4,6 @@ import '../../../styles/authentication/Form.css';
 import { Component } from 'react';
 import { Circle } from '../../Circle';
 import { Link } from 'react-router-dom';
-import { getUserExist, RegistrationUser } from '../../../scripts/backend/user';
-import { isFirstEntryUser } from "../../../scripts/backend/user";
 
 class Form extends Component{
 
@@ -13,6 +11,8 @@ class Form extends Component{
         super(props);
         this.className = this.props.className;
         this.inputsInfo = this.props.inputsInfo;
+        this.userApi = this.props.userApi;
+        console.log(this.userApi)
 
         this.state = {
             isChooseTel: false,
@@ -169,10 +169,10 @@ class Form extends Component{
 
         let passwordData = document.getElementById("password").value;
 
-        let result = await getUserExist({"columnName": colName, "value": loginData, "password": passwordData});
+        let result = await this.userApi.getUserExist({"columnName": colName, "value": loginData, "password": passwordData});
 
         if(result[0] === true){
-            let isFirstEntry = await isFirstEntryUser(this.userID);
+            let isFirstEntry = await this.userApi.isFirstEntryUser(result[1]);
             window.location.assign(`/main?userID=${result[1]}&isFirstEntry=${isFirstEntry}`);
         }
 
@@ -189,7 +189,7 @@ class Form extends Component{
             data[input.type] = input.value
         });
 
-        await RegistrationUser(
+        await this.userApi.RegistrationUser(
             {
                 "name": data["text"], 
                 "phone": data["tel"], 
@@ -198,8 +198,8 @@ class Form extends Component{
             }
         );
 
-        let result = await getUserExist({"columnName": "email", "value": data["email"], "password": data["password"]});
-        let isFirstEntry = await isFirstEntryUser(this.userID);
+        let result = await this.userApi.getUserExist({"columnName": "email", "value": data["email"], "password": data["password"]});
+        let isFirstEntry = true;
         window.location.assign(`/main?userID=${result[1]}&isFirstEntry=${isFirstEntry}`);
     }
 }
