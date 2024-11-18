@@ -1,11 +1,11 @@
 import Form from "./components/Form";
-import {VoidUserApi} from "../../scripts/backend/user";
+import DI from "../../scripts/backend/di";
 
 export function Entry(){
     return (
         <>
             <Form 
-            userApi={new VoidUserApi()}
+            userApi={DI.userApi}
             className={'entry'} 
             inputsInfo={
                 [

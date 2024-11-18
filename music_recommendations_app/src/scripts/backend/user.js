@@ -8,14 +8,14 @@ export class IUserApi {
     RegistrationUser(data){}
 }
 
-export class VoidUserApi {
-    isFirstEntryUser(userID){
+export class VoidUserApi extends IUserApi{
+    async isFirstEntryUser(userID){
         return true;
     }
-    getUserExist(data){
+    async getUserExist(data){
         return [true, 'idblya'];
     }
-    RegistrationUser(data){
+    async RegistrationUser(data){
 
     }
 }

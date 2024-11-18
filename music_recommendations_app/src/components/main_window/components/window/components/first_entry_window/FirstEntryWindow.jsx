@@ -1,12 +1,11 @@
 import { Component } from "react";
 import GenreButton from "./components/GenreButton";
-import { getAllMusicGenres } from "../../../../../../scripts/backend/music";
 
 class FirstEntryWindow extends Component{
 
     constructor(props){
         super(props);
-
+        this.musicApi = props.musicApi;
         this.genresInfo = {
 
             "undefined": <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -840,7 +839,7 @@ class FirstEntryWindow extends Component{
     }
     
     async componentDidUpdate(){
-        this.genres = await getAllMusicGenres();
+        this.genres = await this.musicApi.getAllMusicGenres();
     }
 
     render(){

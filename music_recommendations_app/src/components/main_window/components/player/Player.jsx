@@ -5,23 +5,26 @@ import MusicInfo from './components/MusicInfo';
 
 class Player extends Component {
 
+    history = []
     state = {
         isPlaying: false,
-        trackName: 'Ghosts Again',
-        trackAuthor: 'Deepeche Mode',
+        trackName: '',
+        trackAuthor: '',
         trackImg: '',
         currentTime: 0,
         maxTime: 205
     };
 
-    history = []
-
     constructor(props) {
         super(props);
-
+        this.musicApi = props.musicApi;
         this.switchPlayback = this.#switchPlayback.bind(this);
         this.nextTrack = this.#nextTrack.bind(this);
         this.prevTrack = this.#prevTrack.bind(this);
+
+        this.musicApi.getRandomMusic().then(([trackName, trackAuthor]) => 
+            this.setState({trackName: trackName, trackAuthor: trackAuthor})
+        )
     }
 
     render() {
@@ -98,16 +101,13 @@ class Player extends Component {
         return <MusicInfo key={this.#getRandomInt(100)} img={this.state.trackImg} name={this.state.trackName} author={this.state.trackAuthor} />
     }
 
-    #nextTrack() {
+    async #nextTrack() {
         if (this.state.isPlaying === true) {
             this.#switchPlayback();
         }
 
-        const trackNames = ['Let me hear', 'Юность', 'Aliez']
-        const trackAuthors = ['Fear and Loathing in Las Vegas', 'Луч', 'Sawano Hiroyuki']
+        const [trackName, trackAuthor] = await this.musicApi.getPredictedTrack(this.history);
         const maxTimes = [10, 5, 30]
-
-        const randomIndex = this.#getRandomInt(trackNames.length)
 
         this.history.push({
             trackName: this.state.trackName,
@@ -116,9 +116,9 @@ class Player extends Component {
         })
 
         this.setState({
-            trackName: trackNames[randomIndex],
-            trackAuthor: trackAuthors[randomIndex],
-            maxTime: maxTimes[randomIndex],
+            trackName: trackName,
+            trackAuthor: trackAuthor,
+            maxTime: maxTimes[this.#getRandomInt(maxTimes.length)],
             currentTime: 0
         }
         );

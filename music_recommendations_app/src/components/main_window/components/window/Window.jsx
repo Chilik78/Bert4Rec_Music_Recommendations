@@ -1,6 +1,7 @@
 import FirstEntryWindow from "./components/first_entry_window/FirstEntryWindow";
 import '../../../../styles/main_window/Window.css';
 import { Component } from "react";
+import DI from "../../../../scripts/backend/di";
 
 class Window extends Component{
 
@@ -21,7 +22,7 @@ class Window extends Component{
     #getWindow(){
 
         if(this.isFirstEntryUser === true){
-            return <FirstEntryWindow />
+            return <FirstEntryWindow musicApi={DI.musicApi}/>
         }
 
         return <></> 

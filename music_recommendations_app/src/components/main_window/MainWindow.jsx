@@ -1,6 +1,7 @@
 import {Window, Player, Sidebar} from './components/components';
 import '../../styles/main_window/MainWindow.css';
 import {Circle} from '../Circle'; 
+import DI from '../../scripts/backend/di';
 
 export function MainWindow(){
 
@@ -22,7 +23,7 @@ export function MainWindow(){
             <Sidebar />
             <section id='window-and-player'>
                 <Window userID={userID} isFirstEntryUser={isFirstEntry} />
-                <Player />
+                <Player musicApi={DI.musicApi}/>
             </section>
 
             {/* Левый нижний угол */}
