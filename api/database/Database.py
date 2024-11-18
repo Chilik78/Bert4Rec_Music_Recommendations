@@ -17,6 +17,8 @@ class Database():
             user - пользователь
             history - история прослушки
             music - вся музыка
+            convhistory - конвертированная история
+            convallid - все конвертированные айдишники из музыки
     '''
     def __init__(self, nameDataBase:str = "MusicGuru.db", pathDataBase:str = "api/data") -> None:
         '''
@@ -31,7 +33,7 @@ class Database():
         '''
         self.__databaseName = nameDataBase
         self.__databasePath = pathDataBase
-        self.__tableNames = ['user','history','music']
+        self.__tableNames = ['user','history','music','convhistory', 'convallid']
         self.__create_tables()
     
     def __repr__(self):
@@ -55,7 +57,25 @@ class Database():
         '''
         sql = f"INSERT INTO history (user_id, music_id) VALUES (?, ?)"
         self.__execute(sql, params)
-        
+    
+    def insertDataInConvHistory(self, params:tuple):
+        '''params
+            - conv_user_id
+            - user_id
+            - conv_music_id
+            - music_id
+        '''
+        sql = f"INSERT INTO convhistory (conv_user_id, user_id, conv_music_id, music_id) VALUES (?, ?, ?, ?)"
+        self.__execute(sql, params)
+
+    def  insertDataInConvAllId(self, params:tuple):
+        '''params
+            - conv_music_id
+            - music_id
+        '''
+        sql = f"INSERT INTO convallid (conv_music_id, music_id) VALUES (?, ?)"
+        self.__execute(sql, params)
+
     def insertDataInMusic(self, params:tuple):
         '''params:
             - track
@@ -99,10 +119,7 @@ class Database():
         result = self.__fetch_one(sql) 
         return result
 
-    def select_last_entry(self, tableName:str, columnNameWhere:str, columnNameOrderBy:str, id:str) -> list:
-        sql = f"SELECT * FROM {tableName} WHERE {columnNameWhere} = '{id}' ORDER BY {columnNameOrderBy} DESC LIMIT 1"
-        result = self.__fetch_one(sql) 
-        return result
+
         
     def __execute(self, sql:str, params:tuple = ()):
         try:
@@ -155,7 +172,7 @@ class Database():
             )"""
         self.__execute(sql)
         
-    def __create_history_table(self):
+    def __create_music_table(self):
         sql = f"""CREATE TABLE IF NOT EXISTS music(
             id TEXT PRIMARY KEY, 
             track TEXT, 
@@ -164,7 +181,7 @@ class Database():
             )"""
         self.__execute(sql)
         
-    def __create_music_table(self):
+    def __create_history_table(self):
         sql = f"""CREATE TABLE IF NOT EXISTS history(
             user_id TEXT, 
             music_id TEXT, 
@@ -172,11 +189,31 @@ class Database():
             FOREIGN KEY (music_id) REFERENCES music (music_id)
             )"""
         self.__execute(sql)
+    
+    def __create_conv_history_table(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS convhistory(
+            conv_user_id int, 
+            user_id TEXT,
+            conv_music_id int, 
+            music_id TEXT
+            )"""
+        self.__execute(sql)
+
+    def __create_conv_all_id(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS convallid(
+            conv_music_id int, 
+            music_id TEXT
+            )"""
+        self.__execute(sql)
         
+
     def __create_table(self, table_name:str):
         if table_name == 'user': self.__create_user_table()
         elif table_name == 'history': self.__create_history_table()
         elif table_name == 'music': self.__create_music_table()
+        elif table_name == 'convhistory': self.__create_conv_history_table()
+        elif table_name == 'convallid': self.__create_conv_all_id()
+        
         
     def __create_tables(self):
         for table in self.__tableNames: self.__create_table(table)
@@ -204,6 +241,16 @@ class Database():
         self.dropTable(tableName)
         self.__create_table(tableName)
 
+    def select_last_entry(self, tableName:str, columnNameWhere:str, columnNameOrderBy:str, id:str) -> list:
+        sql = f"SELECT * FROM {tableName} WHERE {columnNameWhere} = '{id}' ORDER BY {columnNameOrderBy} DESC LIMIT 1"
+        result = self.__fetch_one(sql) 
+        return result
+    
+    def get_user_history_by_count(self, id:str, n:int, tableName:str = 'history', columnName:str = 'user_id') -> list:
+        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{id}' ORDER BY music_id DESC LIMIT {n}"
+        result = self.__fetch_all(sql) 
+        return result
+    
     def getAllRecordsTable(self, tableName)->list:
         '''Функция получения всех данных таблицы
         

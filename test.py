@@ -1,12 +1,28 @@
-from api.database.Database import Database
-from api.recommendation_system.RecommSystem import RecommSystem
-from api.recommendation_system.GeneratorData import GeneratorData
+from database.Database import Database
 import uuid
 
 def start():
     db = Database()
-    print(db)
+    
+    #print(db)
+    db.dropTable('convallid')
+    
+    # df = pd.read_csv('api\\songs_normalize.csv', encoding='utf-8')
+    # df.drop(['duration_ms', 'explicit', 'year', 'popularity', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo'], axis=1, inplace=True)
 
+    # print(df)
+
+    # artist_names = []
+    # song_names = []
+    # genres = []
+
+    # artist_names = df['artist'].to_list()
+    # song_names = df['song'].to_list()
+    # genres = df['genre'].to_list()  
+
+    # for i in range(2000):
+    #     db.insertDataInMusic((f"{song_names[i]}", f"{artist_names[i]}", f"{genres[i]}"))
+        
     # db.dropTable('user')
     # db.insertDataInUser(("name", "12345", "ggggg", 'pass'))
     # db.insertDataInMusic(("track", 'artist', 'gemre'))
