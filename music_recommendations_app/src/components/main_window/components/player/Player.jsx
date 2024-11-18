@@ -106,14 +106,14 @@ class Player extends Component {
             this.#switchPlayback();
         }
 
-        const [trackName, trackAuthor] = await this.musicApi.getPredictedTrack(this.history);
-        const maxTimes = [10, 5, 30]
-
         this.history.push({
             trackName: this.state.trackName,
             trackAuthor: this.state.trackAuthor,
             maxTime: this.state.maxTime
         })
+
+        const [trackName, trackAuthor] = await this.musicApi.getPredictedTrack(this.history);
+        const maxTimes = [10, 5, 30]
 
         this.setState({
             trackName: trackName,
