@@ -37,7 +37,7 @@ def get_predicted_track_route(user_id:str) -> Music:
     #TODO: Здесь должна меняться история прослушивания, чтобы модель понимала для какого пользователя она прогнозирует
     #?turned_music_ids = Bridge.func(music_ids)
     #?turned_user_id = Bridge.func(user_id)
-    #?gd.change_history(turned_user_id, turned_music_ids)
+    gd.change_history(turned_user_id, turned_music_ids)
     
     music_id = rs.do_predict()
     #TODO: Сюда сделать перевод id и доставание музыки по нём

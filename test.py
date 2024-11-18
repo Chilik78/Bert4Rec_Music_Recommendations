@@ -1,5 +1,6 @@
-from database.Database import Database
-from recommendation_system.RecommSystem import RecommSystem
+from api.database.Database import Database
+from api.recommendation_system.RecommSystem import RecommSystem
+from api.recommendation_system.GeneratorData import GeneratorData
 import uuid
 
 def start():
@@ -42,5 +43,7 @@ def model_test():
     print(res)
 
 if __name__ == '__main__':
+    #gd = GeneratorData()
+    #gd.change_history(148, [238, 138, 191, 20, 19, 30, 50])
     model_test()
 

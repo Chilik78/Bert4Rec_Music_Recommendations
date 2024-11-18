@@ -322,7 +322,16 @@ class GeneratorData:
         item_with_other_size_int_str = f"item_with_other_size:{vocab.get_item_count + vocab.get_special_token_count}"
         print(colored(f'{vocab_size_in_str}, {user_size_in_str}, {item_size_in_str}, {item_with_other_size_int_str}', 'blue', attrs=['underline']))
 
+    def get_path(self, path):
+            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\GeneratorData.py') + '\\' + path)
 
+    def change_history(self, user_id:int, music_ids:list)->None:
+        with open(f"{self.get_path(self.__output_dir)}\\user_history.txt", 'w', encoding='utf-8') as f:
+            for music_id in music_ids:
+                f.write(f"{user_id}" + " " + f"{music_id}" + "\n")
+            f.close()
+            
+        
 
 if __name__ == "__main__":
     gd = GeneratorData(use_logging=True)
