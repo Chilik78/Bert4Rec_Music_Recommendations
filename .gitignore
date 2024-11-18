@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+music_recommendations_app/
 # Distribution / packaging
 .Python
 build/
