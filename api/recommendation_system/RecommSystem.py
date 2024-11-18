@@ -1,15 +1,15 @@
-from recommendation_system.model.modeling.support_funcs import get_assignment_map_from_checkpoint, get_shape_list, get_activation, create_initializer, layer_norm
-from recommendation_system.model.modeling.BertConfig import BertConfig
-from recommendation_system.model.modeling.BertModel import BertModel
-from recommendation_system.recomm_system.EvalHooks import EvalHooks
-from recommendation_system.model.optimization import *
+from api.recommendation_system.model.modeling.support_funcs import get_assignment_map_from_checkpoint, get_shape_list, get_activation, create_initializer, layer_norm
+from api.recommendation_system.model.modeling.BertConfig import BertConfig
+from api.recommendation_system.model.modeling.BertModel import BertModel
+from api.recommendation_system.recomm_system.EvalHooks import EvalHooks
+from api.recommendation_system.model.optimization import *
 from termcolor import colored
 import tensorflow as tf
 import time
 import os, sys
 import pickle
 
-from recommendation_system.vocab import *
+from api.recommendation_system.vocab import *
 from . import vocab
 
 sys.modules['vocab'] = vocab
@@ -90,7 +90,7 @@ class RecommSystem:
 
     def __init__(self, 
                  bert_config_file:str='data/music/bert_config_music_64.json', 
-                 checkpoint_dir:str='/models/music',
+                 checkpoint_dir:str='models/music',
                  train_input_file:str='data/music/music.train.tfrecord',
                  test_input_file:str='data/music/music.test.tfrecord',
                  predict_input_file:str='data/music/music.predict.tfrecord',
@@ -144,10 +144,11 @@ class RecommSystem:
         
         
         def get_path(path):
-            return os.path.normpath(os.path.dirname(sys.argv[0]) + '\\' + path)
+            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\RecommSystem.py') + '\\' + path)
         
         self.__bert_config_file = get_path(bert_config_file) # Файл конфигурации гиперпараметров модели
         self.__checkpoint_dir = get_path(checkpoint_dir) # Файл для сохранения прогресса при тренировке модели
+        print(self.__checkpoint_dir)
         self.__train_input_file = get_path(train_input_file) # Файл с тренировочными данными
         self.__test_input_file = get_path(test_input_file) # Файл с тестовыми данными
         self.__vocab_filename = get_path(vocab_filename) # Файл словаря

@@ -1,9 +1,7 @@
 from fastapi import APIRouter
-from api.database.Database import Database
+from services import db
 
 history_router = APIRouter()
-
-db = Database()
 
 @history_router.get('/is_first_entry')
 def select_route(user_id:str):

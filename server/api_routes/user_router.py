@@ -1,11 +1,9 @@
 from fastapi import APIRouter
 
-from api.database.Database import Database
+from services import db
 from server.api_models.user import InsertUser, User
 
 user_router = APIRouter()
-
-db = Database()
 
 def createUser(data):
     return User(**{k: v for k, v in zip(User.model_fields.keys(), data)})

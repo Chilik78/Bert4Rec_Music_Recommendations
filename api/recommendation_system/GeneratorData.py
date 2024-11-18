@@ -1,7 +1,7 @@
-from recommendation_system.generate_data.generate_data import generate_test_file, generate_train_file, generate_predict_file
-from recommendation_system.generate_data.write_in_files import write_other_files
+from api.recommendation_system.generate_data.generate_data import generate_test_file, generate_train_file, generate_predict_file
+from api.recommendation_system.generate_data.write_in_files import write_other_files
 from collections import defaultdict
-from recommendation_system.vocab.Vocab import Vocab
+from api.recommendation_system.vocab.Vocab import Vocab
 from termcolor import colored
 import tensorflow as tf
 import random
