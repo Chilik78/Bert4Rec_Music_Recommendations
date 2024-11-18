@@ -148,7 +148,6 @@ class RecommSystem:
         
         self.__bert_config_file = get_path(bert_config_file) # Файл конфигурации гиперпараметров модели
         self.__checkpoint_dir = get_path(checkpoint_dir) # Файл для сохранения прогресса при тренировке модели
-        print(self.__checkpoint_dir)
         self.__train_input_file = get_path(train_input_file) # Файл с тренировочными данными
         self.__test_input_file = get_path(test_input_file) # Файл с тестовыми данными
         self.__vocab_filename = get_path(vocab_filename) # Файл словаря

@@ -31,12 +31,13 @@ def get_random_music_route(genres:list[str]) -> Music:
     
 @music_router.post('/get_predicted_track')
 def get_predicted_track_route(user_id:str) -> Music:
-    convhistory_by_id = db.getValuesFromTableById('convhistory', 'user_id', user_id)
+    convhistory_by_id = db.getValuesFromTableById('convhistory', 'user_id', user_id)  
     turned_music_ids = list(map(lambda x: x[2], convhistory_by_id))
     turned_user_id = convhistory_by_id[0][0]
     gd.change_history(turned_user_id, turned_music_ids)
     
     music_id = rs.do_predict()
-    bd_music_id = db.getValuesFromTableById('convallid', 'conv_music_id ', music_id)[0]
+    print(music_id)
+    bd_music_id = db.getValuesFromTableById('convallid', 'conv_music_id', music_id)[0]
     music = db.getValuesFromTableById('music', 'id', bd_music_id)[0]
     return createMusic(music)

@@ -325,12 +325,15 @@ class GeneratorData:
     def get_path(self, path):
             return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\GeneratorData.py') + '\\' + path)
 
-    def change_history(self, user_id:int, music_ids:list)->None:
+    def change_history(self, user_id:int, music_ids:list[int])->None:
         with open(f"{self.get_path(self.__output_dir)}\\user_history.txt", 'w', encoding='utf-8') as f:
             for music_id in music_ids:
                 f.write(f"{user_id}" + " " + f"{music_id}" + "\n")
             f.close()
-            
+    
+    #TODO: Реализовать функцию для добавления всей истории в файл music.txt; По сути эскалировать change_history
+    def change_train(self, user_ids:list[int], music_ids:list[list[int]]):
+        pass
         
 
 if __name__ == "__main__":
