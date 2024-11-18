@@ -21,7 +21,7 @@ export class VoidMusicApi extends IMusicApi{
         const randomIndex = this.#getRandomInt(trackNames.length);
         return [trackNames[randomIndex], trackAuthors[randomIndex]];
     }
-    async getPredictedTrack(){
+    async getPredictedTrack(history){
         return await this.getRandomMusic();
     }
 }
@@ -33,7 +33,7 @@ export class RestMusicApi extends IMusicApi{
     async getRandomMusic(){
         return await SendReq({url: `${SERVER_ROUTE}/music/get_random_music`});
     }
-    async getPredictedTrack(){
+    async getPredictedTrack(history){
         return await SendReq({url: `${SERVER_ROUTE}/music/get_predicted_track`});
     }
 }
