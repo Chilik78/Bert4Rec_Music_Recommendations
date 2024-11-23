@@ -59,4 +59,5 @@ span{
 button{
     outline: none;
     border-color: transparent;
+    user-select: none;
 }

@@ -9,11 +9,14 @@ class Window extends Component{
         super(props);
         this.userID = props.userID;
         this.isFirstEntryUser = Boolean(props.isFirstEntryUser);
+        this.activatePlayerFunc = props.activatePlayerFunc;
+        this.updateStateFromFirstEntryUser = this.#updateStateFromFirstEntryUser.bind(this);
     }
 
+    
     render(){
         return (
-            <div id="window">
+            <div id="window" style={this.isFirstEntryUser ? {height: "100vh"} : {}}>
                 {this.#getWindow()}
             </div>
         );
@@ -22,10 +25,14 @@ class Window extends Component{
     #getWindow(){
 
         if(this.isFirstEntryUser === true){
-            return <FirstEntryWindow musicApi={DI.musicApi}/>
+            return <FirstEntryWindow musicApi={DI.musicApi} funcOnDone={this.updateStateFromFirstEntryUser}/>
         }
 
         return <></> 
+    }
+
+    #updateStateFromFirstEntryUser(){
+        this.activatePlayerFunc();
     }
 }
 
