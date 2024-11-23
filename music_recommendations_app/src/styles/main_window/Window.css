@@ -1,5 +1,45 @@
 @import url(window/FirstEntryWindow.css);
+@import url(window/Main.css);
+@import url(window/Radio.css);
 
 #window::-webkit-scrollbar{
     display: none;
+}
+
+#search-music{
+    display: flex;
+    align-items: center;
+    transition-duration: .5s;
+    border-bottom: 2px solid var(--primary-unselected-color);
+    padding-bottom: .5em;
+}
+
+#search-music-input{
+    font-size: 17px;
+    padding-left: 2em;
+    transition-duration: .5s;
+    width: 100%;
+    caret-color: var(--primary-purple-color);
+    color: var(--primary-unselected-color);
+}
+
+#search-music-input::placeholder{
+    color: var(--primary-unselected-color);
+}
+
+#search-music:focus-within{
+    border-bottom: 2px solid var(--primary-purple-color);
+}
+
+#search-music:focus-within svg{
+    fill: var(--primary-purple-color);
+}
+
+#search-music:focus-within #search-music-input{
+    color: var(--primary-purple-color);
+}
+
+#search-music svg{
+    transition-duration: .5s;
+    fill: var(--primary-unselected-color);
 }

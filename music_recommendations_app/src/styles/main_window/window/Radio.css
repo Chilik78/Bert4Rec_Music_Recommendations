@@ -1,0 +1,14 @@
+
+#radio{
+    padding-top: 6vh;
+    padding-left: 3vw;
+    padding-right: 10vw;
+    display: flex;
+    flex-direction: column;
+    gap: 30vh;
+}
+
+#radio-header{
+    margin-top: 10vh;
+    font-size: 36px;
+}

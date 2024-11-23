@@ -1,6 +1,16 @@
-export function TabItem({logo, text}){
+export function TabItem({id, logo, text, selected, onClick}){
+
+
+    const getClassName = () => {
+        if(selected)
+            return "tab-item-selected";
+
+        return "tab-item";
+    };
+
+
     return (
-        <div className="tab-item">   
+        <div onClick={() => onClick(id)} className={getClassName()}>   
             <div className='tab-item-icon'>
                 {logo}
             </div>

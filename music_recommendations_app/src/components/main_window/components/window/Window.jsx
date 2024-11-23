@@ -1,14 +1,18 @@
 import FirstEntryWindow from "./components/first_entry_window/FirstEntryWindow";
+import Main from "./components/main/Main";
+import Radio from "./components/radio/Radio";
 import '../../../../styles/main_window/Window.css';
 import { Component } from "react";
 import DI from "../../../../scripts/backend/di";
+import { WindowsType } from "../WindowsType";
 
 class Window extends Component{
 
     constructor(props){
         super(props);
         this.userID = props.userID;
-        this.isFirstEntryUser = Boolean(props.isFirstEntryUser);
+        this.windowType = props.windowType; 
+        this.changeWindowFunc = props.changeWindowFunc;
         this.activatePlayerFunc = props.activatePlayerFunc;
         this.updateStateFromFirstEntryUser = this.#updateStateFromFirstEntryUser.bind(this);
     }
@@ -16,7 +20,7 @@ class Window extends Component{
     
     render(){
         return (
-            <div id="window" style={this.isFirstEntryUser ? {height: "100vh"} : {}}>
+            <div id="window" style={this.windowType === WindowsType.FirstEntryWindow ? {height: "100vh"} : {}}>
                 {this.#getWindow()}
             </div>
         );
@@ -24,15 +28,16 @@ class Window extends Component{
 
     #getWindow(){
 
-        if(this.isFirstEntryUser === true){
-            return <FirstEntryWindow musicApi={DI.musicApi} funcOnDone={this.updateStateFromFirstEntryUser}/>
+        switch(this.windowType){
+            case WindowsType.FirstEntryWindow: return <FirstEntryWindow musicApi={DI.musicApi} funcOnDone={this.updateStateFromFirstEntryUser}/>
+            case WindowsType.Main: return <Main />
+            case WindowsType.Radio: return <Radio />
+            default: return <></> 
         }
-
-        return <></> 
     }
 
     #updateStateFromFirstEntryUser(){
-        this.activatePlayerFunc();
+        this.changeWindowFunc(WindowsType.Main);
     }
 }
 

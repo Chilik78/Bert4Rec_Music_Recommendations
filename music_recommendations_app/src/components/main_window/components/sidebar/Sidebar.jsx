@@ -4,14 +4,17 @@ import errorLoadingLogo from '../../../../assets/images/error_load.png';
 import { TabItem } from './components/TabItem';
 import Avatar from './components/Avatar';
 import { Component } from 'react';
+import { WindowsType } from '../WindowsType';
 
 class Sidebar extends Component{
 
     constructor(props){
         super(props);
+        this.currentWindow = props.currentWindow;
+        this.changeWindowFunc = props.changeWindowFunc;
         this.tabsInfo = [
             {
-                key: 'main-logo',
+                key: 'main',
                 logo:  <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2s2.5.896 2.5 2zm9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2z"/>
                             <path d="M14 11V2h1v9h-1zM6 3v10H5V3h1z"/>
@@ -27,6 +30,8 @@ class Sidebar extends Component{
                 text: 'Радио',
             },
         ];
+
+        this.changeWindow = this.#changeWindow.bind(this);
     }
 
     render(){
@@ -43,7 +48,7 @@ class Sidebar extends Component{
                     </svg>
     
                     <section id='tabs'>
-                        {this.tabsInfo.map((info) => <TabItem key={info.key} logo={info.logo} text={info.text} />)}
+                        {this.tabsInfo.map((info) => <TabItem key={info.key} id={info.key} selected={this.#getSelected(info.key)} logo={info.logo} text={info.text} onClick={this.changeWindow}/>)}
                     </section>
                 </section>
     
@@ -53,6 +58,34 @@ class Sidebar extends Component{
                 
             </div>
         );
+    }
+
+    #getSelected(key){
+        if(key.includes("main") && this.currentWindow === WindowsType.Main){
+            return true;
+        }
+        else if(key.includes("radio") && this.currentWindow === WindowsType.Radio){
+            return true;
+        }
+
+        return false;
+    }
+
+    #changeWindow(key){
+
+        if(this.currentWindow === WindowsType.FirstEntryWindow){
+            return;
+        }
+    
+        if(key.includes("main") && this.currentWindow !== WindowsType.Main){
+            this.changeWindowFunc(WindowsType.Main);
+            return;
+        }
+
+        if(key.includes("radio") && this.currentWindow !== WindowsType.Radio){
+            this.changeWindowFunc(WindowsType.Radio);
+            return;
+        }
     }
 }
 
