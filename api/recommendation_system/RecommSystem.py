@@ -184,7 +184,7 @@ class RecommSystem:
         tf.compat.v1.logging.set_verbosity(tf_logging_mode) # Установка вывода логов в консоль от tensorflow
 
 
-    def do_train(self):
+    def do_train(self, num_train_steps = None):
         '''Запускает обучение модели'''
 
         if(self.__is_logging):
@@ -198,7 +198,7 @@ class RecommSystem:
             is_training=True)
         
         start_time = time.time()
-        self.__estimator.train(input_fn=train_input_fn, max_steps=self.__num_train_steps)
+        self.__estimator.train(input_fn=train_input_fn, max_steps=num_train_steps if num_train_steps else self.__num_train_steps)
         end_time = time.time() - start_time
 
         if(self.__is_logging):
@@ -287,7 +287,7 @@ class RecommSystem:
         if(self.__is_logging):
             print(colored(f"----------Результаты----------\nToken: {token}\nId Item: {vocab.token_to_ids[token]}", "green", attrs=['bold']))
 
-        return vocab.token_to_ids[token]
+        return token.removeprefix('item_')
 
 
     def __input_fn_builder(self, input_files, max_seq_length, max_predictions_per_seq, is_training, num_cpu_threads=4):

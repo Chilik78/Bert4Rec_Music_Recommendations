@@ -46,6 +46,11 @@ class GeneratorData:
 
         `gen_file_for_predict` - Генерирует файлы для прогнозирования модели
     '''
+    HISTORY_FILE = 'user_history.txt'
+    TRAIN_FILE = 'music.txt'
+    
+    def get_path(self, path):
+            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\GeneratorData.py') + '\\' + path)
 
     def __init__(self, 
                  output_dir:str='./data/music/', 
@@ -92,7 +97,7 @@ class GeneratorData:
         '''
 
 
-        self.__output_dir = output_dir # Путь папке с данными
+        self.__output_dir = self.get_path(output_dir) # Путь папке с данными
         self.__dataset_name = dataset_name # Название датасета
         self.__version_id = version_id # ID версии
 
@@ -134,7 +139,7 @@ class GeneratorData:
             print(os.getcwd())
             exit(1)
 
-        dataset = self.__data_partition(self.__output_dir+self.__dataset_name+'.txt')
+        dataset = self.__data_partition(self.__output_dir+'\\'+self.__dataset_name+'.txt')
 
         # User Train - содержит последовательности всех пользователей, только последние два элемента полседовательности стираются
         # User Valid - содержит только предпоследний элемент полседовательности всех пользователей
@@ -160,7 +165,7 @@ class GeneratorData:
 
         rng = random.Random(self.__random_seed)
 
-        filename = self.__output_dir + self.__dataset_name + self.__version_id
+        filename = self.__output_dir + '\\' + self.__dataset_name + self.__version_id
 
         output_filename = filename + '.train.tfrecord'
         generate_train_file(user_train_data, output_filename, rng, self.__dupe_factor, vocab, 
@@ -194,7 +199,7 @@ class GeneratorData:
             print(os.getcwd())
             exit(1)
 
-        dataset = self.__data_partition(self.__output_dir+self.__dataset_name+'.txt')
+        dataset = self.__data_partition(self.__output_dir+'\\'+self.__dataset_name+'.txt')
 
         # User Train - содержит последовательности всех пользователей, только последние два элемента полседовательности стираются
         # User Valid - содержит только предпоследний элемент полседовательности всех пользователей
@@ -202,7 +207,7 @@ class GeneratorData:
         # Usernum - последний id пользователя
         # Itemnum - кол-во элементов всех пользователей
         [user_train, user_valid, user_test, usernum, itemnum] = dataset 
-        user_history = self.__read_data(self.__output_dir+'user_history.txt')
+        user_history = self.__read_data(self.__output_dir+'\\'+'user_history.txt')
 
         # Запуск проверки подлинности в тренировке (Непонятно зачем нужен этот цикл)
         for u in user_train:
@@ -217,7 +222,7 @@ class GeneratorData:
 
         vocab = Vocab(user_test_data)
 
-        output_filename = self.__output_dir + self.__dataset_name + self.__version_id + '.predict.tfrecord'
+        output_filename = self.__output_dir + '\\' + self.__dataset_name + self.__version_id + '.predict.tfrecord'
         generate_predict_file(user_history_data, output_filename, vocab, self.__max_seq_length, self.__max_predictions_per_seq, self.__is_logging)
 
         end_time = time.time()
@@ -322,18 +327,20 @@ class GeneratorData:
         item_with_other_size_int_str = f"item_with_other_size:{vocab.get_item_count + vocab.get_special_token_count}"
         print(colored(f'{vocab_size_in_str}, {user_size_in_str}, {item_size_in_str}, {item_with_other_size_int_str}', 'blue', attrs=['underline']))
 
-    def get_path(self, path):
-            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\GeneratorData.py') + '\\' + path)
+    
 
     def change_history(self, user_id:int, music_ids:list[int])->None:
-        with open(f"{self.get_path(self.__output_dir)}\\user_history.txt", 'w', encoding='utf-8') as f:
+        with open(f"{self.__output_dir}/{self.HISTORY_FILE}", 'w', encoding='utf-8') as f:
             for music_id in music_ids:
                 f.write(f"{user_id}" + " " + f"{music_id}" + "\n")
             f.close()
     
-    #TODO: Реализовать функцию для добавления всей истории в файл music.txt; По сути эскалировать change_history
-    def change_train(self, user_ids:list[int], music_ids:list[list[int]]):
-        pass
+    def change_train(self, user_ids:list[int], list_music_ids:list[list[int]]):
+        with open(f"{self.__output_dir}/{self.TRAIN_FILE}", 'w', encoding='utf-8') as f:
+            for user_id, music_ids in zip(user_ids, list_music_ids):
+                for music_id in music_ids:
+                    f.write(f"{user_id}" + " " + f"{music_id}" + "\n")
+            f.close()
         
 
 if __name__ == "__main__":

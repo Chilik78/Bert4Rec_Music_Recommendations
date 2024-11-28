@@ -348,7 +348,7 @@ node {
             size: 1
           }
         }
-        string_val: "data\\music\\music.train.tfrecord"
+        string_val: "B:\\MeinCode\\Bert4Rec_Music_Recommendations\\api\\data\\music\\music.train.tfrecord"
       }
     }
   }

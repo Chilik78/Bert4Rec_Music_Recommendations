@@ -3,11 +3,16 @@ from .TrainingInstance import TrainingInstance
 from .PredictInstance import PredictInstance
 from termcolor import colored
 import tensorflow as tf
-from vocab import Vocab
 import multiprocessing
 import collections
 import random
 import time
+#import sys
+
+from api.recommendation_system.vocab import *
+# from . import vocab
+
+# sys.modules['vocab'] = vocab
 
 MaskedLmInstance = collections.namedtuple("MaskedLmInstance", ["index", "label"])
 

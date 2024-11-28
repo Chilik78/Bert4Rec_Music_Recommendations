@@ -12,7 +12,7 @@
   "vocab_size": 13048
 }
 
-global_step = 100000
-loss = 8.247707
+global_step = 11000
+loss = 16.293615
 masked_lm_accuracy = 0.0
-masked_lm_loss = 8.211223
+masked_lm_loss = 16.9776

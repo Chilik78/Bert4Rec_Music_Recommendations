@@ -93,7 +93,7 @@ def write_instance_to_example_files(instances, max_seq_length, max_predictions_p
 
 def write_instance_to_predict_files(instance, output_filename, vocab, max_seq_length, max_predictions_per_seq):
     writer = tf.compat.v1.python_io.TFRecordWriter(output_filename)
-
+    print('convert_tokens_to_ids', vocab.convert_tokens_to_ids(instance.tokens))
     try:
         input_ids = vocab.convert_tokens_to_ids(instance.tokens)
     except:

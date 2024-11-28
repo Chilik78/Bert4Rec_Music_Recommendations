@@ -17,6 +17,7 @@ app.add_middleware(
 app.include_router(user_router, prefix='/users')
 app.include_router(music_router, prefix='/music')
 app.include_router(history_router, prefix='/history')
+app.include_router(service_router, prefix='/service')
 
 if __name__ == '__main__':
     uvicorn.run(app)

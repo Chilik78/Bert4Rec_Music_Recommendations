@@ -71,10 +71,13 @@ class EvalHooks(tf.compat.v1.train.SessionRunHook):
         masked_lm_log_probs = masked_lm_log_probs.reshape((-1, self.__max_predictions_per_seq, masked_lm_log_probs.shape[1]))
 
         for idx in range(len(input_ids)):
+            key = "user_" + str(info[idx][0])
+            if not self.user_history.get(key): continue 
             rated = set(input_ids[idx])
             rated.add(0)
             rated.add(masked_lm_ids[idx][0])
-            map(lambda x: rated.add(x), self.user_history["user_" + str(info[idx][0])][0])
+            
+            map(lambda x: rated.add(x), self.user_history[key][0])
             item_idx = [masked_lm_ids[idx][0]]
             # here we need more consideration
             masked_lm_log_probs_elem = masked_lm_log_probs[idx, 0]
