@@ -67,6 +67,9 @@ export class VoidMusicApi extends IMusicApi{
     async getPredictedTrack(history){
         return await this.getRandomMusic();
     }
+    async getTrackFile(music){
+        return 'files/Animal - The YD.mp3'
+    }
 }
 
 export class RestMusicApi extends IMusicApi{
@@ -78,5 +81,8 @@ export class RestMusicApi extends IMusicApi{
     }
     async getPredictedTrack(history){
         return await SendReq({url: `${SERVER_ROUTE}/music/get_predicted_track`});
+    }
+    async getTrackFile(music){
+        //return await SendReq({url: `${SERVER_ROUTE}/service/get_predicted_track`});
     }
 }

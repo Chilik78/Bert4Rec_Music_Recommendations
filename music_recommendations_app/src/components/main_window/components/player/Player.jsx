@@ -21,9 +21,21 @@ class Player extends Component {
         this.switchPlayback = this.#switchPlayback.bind(this);
         this.nextTrack = this.#nextTrack.bind(this);
         this.prevTrack = this.#prevTrack.bind(this);
+        this.changeVolume = this.#changeVolume.bind(this);
 
-        this.musicApi.getRandomMusic().then(([trackName, trackAuthor]) => 
-            this.setState({trackName: trackName, trackAuthor: trackAuthor})
+        this.musicApi.getRandomMusic().then(async ([trackName, trackAuthor])  => {
+            const filename = await this.musicApi.getTrackFile({trackName, trackAuthor})
+            console.log(filename)
+            this.audio = new Audio(filename)
+            this.audio.load()
+            this.audio.crossOrigin = "anonymous";
+            console.log(this.audio.volume)
+            const duration = this.audio.duration
+            
+            this.state.trackName = trackName
+            this.state.trackAuthor = trackAuthor
+            this.state.maxTime = duration
+        }
         )
     }
 
@@ -74,7 +86,7 @@ class Player extends Component {
                             <path d="M2.17978 5.49653L2.17961 5.49686C1.11462 7.58001 0.916973 10.5196 2.76753 14.1723L2.76757 14.1724C4.54357 17.6761 8.20395 21.8102 14.717 26.278L14.9998 26.4721L15.2826 26.278C21.7958 21.8102 25.4541 17.6761 27.2319 14.1726L27.2321 14.1722C29.0825 10.5181 28.8871 7.58011 27.8198 5.49652C25.5919 1.14664 19.4051 -0.0945725 15.9858 3.42019L15.9856 3.42043L14.9996 4.4353L14.0138 3.42206C14.0138 3.42206 14.0138 3.42206 14.0138 3.42206C10.5947 -0.0925235 4.40784 1.14642 2.17978 5.49653ZM14.3312 2.51112L14.3319 2.51179C14.438 2.60902 14.5413 2.70883 14.6402 2.81125L15.0015 3.18519L15.361 2.80957C15.4578 2.70849 15.5584 2.61125 15.6628 2.51807L15.6628 2.51811L15.6686 2.51283C19.6569 -1.16131 26.3745 0.454588 28.69 5.28324C29.8336 7.66806 29.9194 10.8908 27.9343 14.7163C25.9691 18.5036 21.9759 22.8704 14.9998 27.5249C8.02366 22.8708 4.0304 18.5045 2.065 14.7176C0.0797779 10.8924 0.165452 7.66991 1.30894 5.2851C3.62421 0.456426 10.3419 -1.16045 14.3312 2.51112Z" fill="black" stroke="var(--primary-purple-color)" />
                             <line x1="4.70711" y1="2.29289" x2="23.7071" y2="21.2929" stroke="var(--primary-purple-color)" strokeWidth="2" />
                         </svg>
-                        <svg id='volume' width="29" height="29" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg id='volume' onClick={this.changeVolume} width="29" height="29" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_126_34" fill="var(--primary-svg-color)">
                                 <path d="M19.9446 1.66456C19.9441 1.35089 19.8555 1.04372 19.6887 0.778334C19.522 0.512951 19.284 0.30013 19.0021 0.164329C18.7202 0.028528 18.4058 -0.0247425 18.0951 0.0106407C17.7843 0.046024 17.4898 0.168624 17.2454 0.364352L9.39058 6.66535H1.66205C1.22125 6.66535 0.798498 6.84097 0.486803 7.15358C0.175109 7.46619 0 7.89018 0 8.33228V21.6677C0 22.1098 0.175109 22.5338 0.486803 22.8464C0.798498 23.159 1.22125 23.3347 1.66205 23.3347H9.39058L17.2454 29.6356C17.4898 29.8314 17.7843 29.954 18.0951 29.9894C18.4058 30.0247 18.7202 29.9715 19.0021 29.8357C19.284 29.6999 19.522 29.487 19.6887 29.2217C19.8555 28.9563 19.9441 28.6491 19.9446 28.3354V1.66456ZM11.0094 9.63248L16.6205 5.13177V24.8682L11.0094 20.3675C10.7152 20.1308 10.3495 20.0015 9.97229 20.0008H3.3241V9.99921H9.97229C10.3495 9.99854 10.7152 9.86921 11.0094 9.63248ZM30 15C30.0025 16.9705 29.6168 18.9221 28.8649 20.7427C28.1131 22.5632 27.0099 24.2168 25.6188 25.6083L23.2687 23.2513C24.3506 22.1689 25.2086 20.8827 25.7933 19.4667C26.3781 18.0506 26.678 16.5327 26.6759 15C26.6778 13.4674 26.3778 11.9494 25.7931 10.5334C25.2084 9.11741 24.3505 7.83121 23.2687 6.7487L25.6188 4.39166C27.0099 5.78323 28.1131 7.4368 28.8649 9.25734C29.6168 11.0779 30.0025 13.0295 30 15Z" />
                             </mask>
@@ -84,6 +96,11 @@ class Player extends Component {
                 </section>
             </div>
         );
+    }
+
+    #changeVolume(){
+        if(!this.audio) return;
+        this.audio.volume = this.audio.volume === 0 ? 1 : 0
     }
 
     #secondsToTime(seconds) {
@@ -112,13 +129,14 @@ class Player extends Component {
             maxTime: this.state.maxTime
         })
 
-        const [trackName, trackAuthor] = await this.musicApi.getPredictedTrack(this.history);
-        const maxTimes = [10, 5, 30]
+        const music = await this.musicApi.getPredictedTrack(this.history);
+        const filename = await this.musicApi.getTrackFile(music)
+        this.audio.src = filename
 
         this.setState({
-            trackName: trackName,
-            trackAuthor: trackAuthor,
-            maxTime: maxTimes[this.#getRandomInt(maxTimes.length)],
+            trackName: music.trackName,
+            trackAuthor: music.trackAuthor,
+            maxTime: this.audio.duration,
             currentTime: 0
         }
         );
@@ -136,10 +154,14 @@ class Player extends Component {
 
         const prevTrack = this.history.pop()
 
+        const filename = `files/${prevTrack.trackName} - ${prevTrack.trackAuthor}.mp3`
+
+        this.audio.src = filename
+
         this.setState({
             trackName: prevTrack.trackName,
             trackAuthor: prevTrack.trackAuthor,
-            maxTime: prevTrack.maxTime,
+            maxTime: this.audio.duration,
             currentTime: 0
         }
         );
@@ -183,22 +205,49 @@ class Player extends Component {
        
     }
 
-    #play() {
+    async #startPlayMusic(){
+        const audioPromise = this.audio.play()
+    if (audioPromise !== undefined) {
+      audioPromise
+        .then(_ => {
+          // autoplay started
+        })
+        .catch(err => {
+          // catch dom exception
+          console.info(err)
+        })
+    }
+    }
+
+    async #stopPlayMusic(){
+        const audioPromise = this.audio.pause()
+        if (audioPromise !== undefined) {
+            audioPromise
+              .then(_ => {
+                // autoplay started
+              })
+              .catch(err => {
+                // catch dom exception
+                console.info(err)
+              })
+          }
+    }
+
+    async #play() {
         if (this.interval_id) {
+            await this.#stopPlayMusic()
             clearInterval(this.interval_id);
             this.interval_id = undefined
         }
-
         else {
+            await this.#startPlayMusic()
             this.interval_id = setInterval(() => this.#changeCurrentTime(), this.#tick*1000)
         }
     }
 
-    #switchPlayback() {
-        this.#play();
+    async #switchPlayback() {
+        await this.#play();
         this.setState({ isPlaying: !this.state.isPlaying });
-
-
     }
 
 }
