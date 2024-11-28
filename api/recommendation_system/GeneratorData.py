@@ -50,7 +50,7 @@ class GeneratorData:
     TRAIN_FILE = 'music.txt'
     
     def get_path(self, path):
-            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\GeneratorData.py') + '\\' + path)
+            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\\GeneratorData.py') + '\\' + path)
 
     def __init__(self, 
                  output_dir:str='./data/music/', 

@@ -37,7 +37,6 @@ def get_predicted_track_route(user_id:str) -> Music:
     gd.change_history(turned_user_id, turned_music_ids)
     gd.gen_files_for_train()
     gd.gen_file_for_predict()
-    rs.do_eval()
     music_id = rs.do_predict()
     bd_music_id = db.getValuesFromTableById('convallid', 'conv_music_id', music_id)[0][1]
     music = db.getValuesFromTableById('music', 'id', bd_music_id)[0]

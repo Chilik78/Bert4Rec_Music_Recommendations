@@ -144,7 +144,7 @@ class RecommSystem:
         
         
         def get_path(path):
-            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\RecommSystem.py') + '\\' + path)
+            return os.path.normpath(os.path.abspath(__file__).removesuffix('\\recommendation_system\\RecommSystem.py') + '\\' + path)
         
         self.__bert_config_file = get_path(bert_config_file) # Файл конфигурации гиперпараметров модели
         self.__checkpoint_dir = get_path(checkpoint_dir) # Файл для сохранения прогресса при тренировке модели

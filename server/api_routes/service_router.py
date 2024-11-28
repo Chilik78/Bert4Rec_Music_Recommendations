@@ -1,7 +1,15 @@
 from fastapi import APIRouter
-from services import db, gd, rs
+from fastapi.responses import FileResponse
+from server.api_models.music import DownloadMusic
+from services import db, gd, rs, sd
 
 service_router = APIRouter()
+
+@service_router.post('/get_track_file')
+def get_track_file(track: DownloadMusic) -> FileResponse:
+    track_path = sd.download_song(track.track, track.artist)
+    if not track_path: return
+    return FileResponse(path=track_path, filename=sd.get_filename_track(track.track, track.artist))
 
 @service_router.post('/relearn_net')
 def relearn_net_route(num_train_steps = None) -> bool:
