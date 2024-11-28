@@ -1,4 +1,8 @@
 import SearchMusic from "../../SearchMusic";
+import ChartContent from "./components/ChartContent";
+import MainContent from "./components/MainContent";
+import NoveltyContent from "./components/NoveltyContent";
+
 
 export default function Main() {
     return ( 
@@ -6,11 +10,21 @@ export default function Main() {
             
             <section>
                 <SearchMusic />
-                <h1 id='main-header'>Главное</h1>
+                <MainContent />
             </section>
             
-            <h2>Новинки</h2>
-            <h2>Чарт</h2>
+            <section>
+                <h2>Новинки</h2>
+                <section id="novelty-playlists">
+                    <NoveltyContent />
+                </section>
+            </section>
+            
+
+            <section>
+                <h2>Чарт</h2>
+                <ChartContent />
+            </section>
         </div>
     );
 }
