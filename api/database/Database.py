@@ -1,0 +1,318 @@
+import sqlite3
+import uuid
+
+class Database():
+    '''
+        Класс Базы Данных Музыкального гуру
+        -----------------------------------
+
+        Объект Класса Базы Данных
+
+        Содержит:
+
+            `nameTable` - название таблицы в Базе Данных
+
+        Таблицы БД:
+
+            user - пользователь
+            history - история прослушки
+            music - вся музыка
+            convhistory - конвертированная история
+            convallid - все конвертированные айдишники из музыки
+    '''
+    def __init__(self, nameDataBase:str = "MusicGuru.db", pathDataBase:str = "api/data") -> None:
+        '''
+            Конструктор Базы Данных Музыкального гуру
+
+            Параметры:
+            ----------
+            
+                `nameDataBase` - название Базы Данных (По умолчанию: "MusicGuru.db")
+
+            ----------
+        '''
+        self.__databaseName = nameDataBase
+        self.__databasePath = pathDataBase
+        self.__tableNames = ['user','history','music','convhistory', 'convallid']
+        self.__create_tables()
+    
+    def __repr__(self):
+        return f"Путь: {self.__databasePath}/{self.__databaseName}\nТаблицы: {', '.join(self.__tableNames)}"
+    
+    def insertDataInUser(self, params:tuple):
+        '''params:
+            - name
+            - phone_number
+            - email
+            - password
+        '''
+        uid = str(uuid.uuid4())
+        sql = f"INSERT INTO user (id, name, phone_number, email, password) VALUES ('{uid}', ?, ?, ?, ?)"
+        self.__execute(sql, params)
+        
+    def insertDataInHistory(self, params:tuple):
+        '''params:
+            - user_id
+            - music_id
+        '''
+        sql = f"INSERT INTO history (user_id, music_id) VALUES (?, ?)"
+        self.__execute(sql, params)
+    
+    def insertDataInConvHistory(self, params:tuple):
+        '''params
+            - conv_user_id
+            - user_id
+            - conv_music_id
+            - music_id
+        '''
+        sql = f"INSERT INTO convhistory (conv_user_id, user_id, conv_music_id, music_id) VALUES (?, ?, ?, ?)"
+        self.__execute(sql, params)
+
+    def  insertDataInConvAllId(self, params:tuple):
+        '''params
+            - conv_music_id
+            - music_id
+        '''
+        sql = f"INSERT INTO convallid (conv_music_id, music_id) VALUES (?, ?)"
+        self.__execute(sql, params)
+
+    def insertDataInMusic(self, params:tuple):
+        '''params:
+            - track
+            - artist
+            - genre
+        '''
+        uid = str(uuid.uuid4())
+        sql = f"INSERT INTO music (id, track, artist, genre) VALUES ('{uid}', ?, ?, ?)"
+        self.__execute(sql, params)
+        
+    def __connect(self):
+        return sqlite3.connect(f'{self.__databasePath}/{self.__databaseName}')
+    
+    def __many_execute(self, sql:str, params_list:list = []):
+        try:
+            con = self.__connect()
+            cur = con.cursor()
+            for params in params_list:
+                if not params: cur.execute(sql)
+                else: cur.execute(sql, params)
+           
+        except Exception as e:
+            print(f"Ошибка исполнения: {e}")
+        finally:
+            con.commit()
+            cur.close()
+            con.close()
+            
+    def is_exist(self, id:str, table:str) -> bool:
+        sql = f"SELECT COUNT(*) FROM {table} WHERE id = '{id}'"
+        result = not not self.__fetch_one(sql)[0]
+        return result
+    
+    def is_exist_by_value(self, tableName:str, columnName:str, value) ->bool:
+        sql = f"SELECT EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{value}')"
+        result = not not self.__fetch_one(sql)[0] 
+        return result
+    
+    def is_exist_in_column(self, id:str, tableName:str, columnName:str) -> bool:
+        sql = f"SELECT CASE WHEN EXISTS (SELECT 1 FROM {tableName} WHERE {columnName} = '{id}') THEN 1 ELSE 0 END AS exist"
+        result = self.__fetch_one(sql) 
+        return result
+
+
+        
+    def __execute(self, sql:str, params:tuple = ()):
+        try:
+            con = self.__connect()
+            cur = con.cursor()
+            if not params: cur.execute(sql)
+            else: cur.execute(sql, params)
+        except Exception as e:
+            print(f"Ошибка исполнения: {e}")
+        finally:
+            con.commit()
+            cur.close()
+            con.close()
+    
+    def __fetch_all(self, sql:str, params:tuple = ()):
+        try:
+            con = self.__connect()
+            cur = con.cursor()
+            cur.execute(sql, params)
+        except Exception as e:
+            print(f"Ошибка исполнения: {e}")
+        finally:
+            result = cur.fetchall()
+            con.commit()
+            cur.close()
+            con.close()
+            return result
+        
+    def __fetch_one(self, sql:str, params:tuple = ()):
+        try:
+            con = self.__connect()
+            cur = con.cursor()
+            cur.execute(sql, params)
+        except Exception as e:
+            print(f"Ошибка исполнения: {e}")
+        finally:
+            result = cur.fetchone()
+            con.commit()
+            cur.close()
+            con.close()
+            return result
+        
+    def __create_user_table(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS user(
+            id TEXT PRIMARY KEY, 
+            name TEXT, 
+            phone_number TEXT, 
+            email TEXT, 
+            password TEXT
+            )"""
+        self.__execute(sql)
+        
+    def __create_music_table(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS music(
+            id TEXT PRIMARY KEY, 
+            track TEXT, 
+            artist TEXT, 
+            genre TEXT
+            )"""
+        self.__execute(sql)
+        
+    def __create_history_table(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS history(
+            user_id TEXT, 
+            music_id TEXT, 
+            FOREIGN KEY (user_id) REFERENCES user (user_id), 
+            FOREIGN KEY (music_id) REFERENCES music (music_id)
+            )"""
+        self.__execute(sql)
+    
+    def __create_conv_history_table(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS convhistory(
+            conv_user_id int, 
+            user_id TEXT,
+            conv_music_id int, 
+            music_id TEXT
+            )"""
+        self.__execute(sql)
+
+    def __create_conv_all_id(self):
+        sql = f"""CREATE TABLE IF NOT EXISTS convallid(
+            conv_music_id int, 
+            music_id TEXT
+            )"""
+        self.__execute(sql)
+        
+
+    def __create_table(self, table_name:str):
+        if table_name == 'user': self.__create_user_table()
+        elif table_name == 'history': self.__create_history_table()
+        elif table_name == 'music': self.__create_music_table()
+        elif table_name == 'convhistory': self.__create_conv_history_table()
+        elif table_name == 'convallid': self.__create_conv_all_id()
+        
+        
+    def __create_tables(self):
+        for table in self.__tableNames: self.__create_table(table)
+
+    def dropTable(self, tableName)->None:
+        '''Функция удаления таблицы
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+        
+        '''
+
+        sql = f"DROP TABLE IF EXISTS {tableName}"
+        self.__execute(sql)
+
+    def clearTable(self, tableName)->None:
+        '''Функция очищения таблицы
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+        
+        '''
+        self.dropTable(tableName)
+        self.__create_table(tableName)
+
+    def select_last_entry(self, tableName:str, columnNameWhere:str, columnNameOrderBy:str, id:str) -> list:
+        sql = f"SELECT * FROM {tableName} WHERE {columnNameWhere} = '{id}' ORDER BY {columnNameOrderBy} DESC LIMIT 1"
+        result = self.__fetch_one(sql) 
+        return result
+    
+    def get_user_history_by_count(self, id:str, n:int, tableName:str = 'history', columnName:str = 'user_id') -> list:
+        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{id}' ORDER BY music_id DESC LIMIT {n}"
+        result = self.__fetch_all(sql) 
+        return result
+    
+    def getAllRecordsTable(self, tableName)->list:
+        '''Функция получения всех данных таблицы
+        
+            Параметры:
+             ----------
+             tableName - имя таблицы
+        
+        '''
+        sql = f"SELECT * FROM {tableName}"
+        result = self.__fetch_all(sql)
+        return result
+
+    def getIdByValue(self, tableName, columnName, value)->list:
+        '''Функция получения айдишника 
+        
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя столбца
+             value - значение столбца
+        
+        '''
+        sql = f"SELECT id FROM {tableName} WHERE {columnName} = '{value}'"
+        result = self.__fetch_one(sql)
+        return result    
+
+    def getAllUniqValuesFromTablesColumn(self, tableName, columnName)->list:
+        '''Функция получения уникальных значений в столбце таблицы
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя колонки
+        '''
+        sql = f"SELECT DISTINCT {columnName} FROM {tableName}"
+        result = self.__fetch_all(sql)
+        return result
+    
+    def getValuesFromTableById(self, tableName, columnName, value) -> list:
+        '''Функция получения данных таблицы по значению
+
+            Параметры:
+             ----------
+             tableName - имя таблицы
+             columnName - имя столбца
+             value - значение в столбце
+        '''
+        sql = f"SELECT * FROM {tableName} WHERE {columnName} = '{value}'"
+        result = self.__fetch_all(sql)
+        return result
+
+    @property
+    def getTablesName(self) -> list:
+        '''Таблицы'''
+        return self.__tableNames
+    
+    @property
+    def getDataBaseName(self) -> str:
+        '''Название DB'''
+        return self.__databaseName
+    
+    @property
+    def getPathName(self) -> str:
+        '''Папка DB'''
+        return self.__databasePath
