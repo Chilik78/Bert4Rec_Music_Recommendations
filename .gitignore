@@ -9,6 +9,7 @@ music_recommendations_app/
 # Distribution / packaging
 .Python
 build/
+server/files
 develop-eggs/
 dist/
 downloads/
