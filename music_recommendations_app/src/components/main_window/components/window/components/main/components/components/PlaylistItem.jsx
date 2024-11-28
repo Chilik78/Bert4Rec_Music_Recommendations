@@ -21,7 +21,7 @@ export default function PlaylistItem({num, img, title, authors}) {
                     : <></>
                 }
                 
-                {num === undefined ? <></> : <div style={state.isHover ? {filter: "brightness(0.8)"} : {}} className="mix-day">Микс дня #{num}</div>}
+                {num === undefined ? <></> : <div style={state.isHover ? {filter: "brightness(0.8)"} : {}} className="mix-day">Умный микс #{num}</div>}
             </section>
             
             <p className="playlist-item-title">{title}</p>

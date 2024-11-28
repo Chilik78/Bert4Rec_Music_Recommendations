@@ -5,11 +5,12 @@ from services import db, gd, rs, sd
 
 service_router = APIRouter()
 
-@service_router.post('/get_track_file')
-def get_track_file(track: DownloadMusic) -> FileResponse:
-    track_path = sd.download_song(track.track, track.artist)
+@service_router.post('/get_track_file/{name_file}')
+def get_track_file(name_file: str) -> FileResponse:
+    track = name_file.split(' - ')
+    track_path = sd.download_song(track[0], track[1])
     if not track_path: return
-    return FileResponse(path=track_path, filename=sd.get_filename_track(track.track, track.artist))
+    return FileResponse(path=track_path, filename=sd.get_filename_track(track[0], track[1]), headers={'Access-Control-Allow-Origin': '*'})
 
 @service_router.post('/relearn_net')
 def relearn_net_route(num_train_steps = None) -> bool:

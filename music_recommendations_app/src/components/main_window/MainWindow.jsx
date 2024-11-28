@@ -55,13 +55,13 @@ export function MainWindow(){
 
         getUserInfo();
     }, []);
-
+    DI.userApi.userID = state.userID
     return (
         <div id='main-window'>
             <Sidebar key={getRandomKey(1000000)} currentWindow={state.currentWindow} changeWindowFunc={changeWindow}/>
             <section id='window-and-player'>
                 <Window key={getRandomKey(1000000)} userID={state.userID} windowType={state.currentWindow} changeWindowFunc = {changeWindow}/>
-                {state.isFirstEntry === "true" ? <></> : <Player musicApi={DI.musicApi}/>}
+                {state.isFirstEntry === "true" ? <></> : <Player key={getRandomKey(1000000)} musicApi={DI.musicApi}/>}
             </section>
 
             {getCircles()}

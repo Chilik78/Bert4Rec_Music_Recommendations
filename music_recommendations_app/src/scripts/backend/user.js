@@ -10,10 +10,10 @@ export class IUserApi {
 
 export class VoidUserApi extends IUserApi{
     async isFirstEntryUser(userID){
-        return false;
+        return true;
     }
     async getUserExist(data){
-        return [true, 'idblya'];
+        return [true, data.value];
     }
     async RegistrationUser(data){
 

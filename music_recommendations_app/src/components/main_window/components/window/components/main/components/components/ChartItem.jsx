@@ -10,8 +10,7 @@ export default function ChartItem({num, img, title, author}) {
             <section className="chart-item-content" onMouseEnter={() => setState({isHover: true})} onMouseLeave={() => setState({isHover: false})}>
                 
                 <div className="chart-item-img-and-play-icon">
-                    <img className="chart-item-img" style={state.isHover ? {filter: "brightness(0.8)"} : {}} src={img} alt=""></img>
-
+                    <div className="chart-item-img" style={state.isHover ? {filter: "brightness(0.8)", backgroundImage: `url(${img})`} : {backgroundImage: `url(${img})`}}  alt="">
                     {   
                         state.isHover === true ? 
                         <svg className="chart-item-play-icon" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
@@ -19,10 +18,12 @@ export default function ChartItem({num, img, title, author}) {
                             <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
                         </svg>
                         : <></>
-                    }
+                    }</div>
+
+                    
                 </div>
                 
-                <section>
+                <section style={{width: '100%'}}>
                     <p className="chart-item-title">{title}</p>
                     <p className="chart-item-author">{author}</p>
                 </section>

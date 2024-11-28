@@ -16,6 +16,7 @@ export async function SendReq({type="GET", url="/", data=undefined}){
         response = await fetch(
             url, 
             {
+                //mode: 'no-cors',
                 method: type, 
                 body: JSON.stringify(data), 
                 headers: {
@@ -28,9 +29,52 @@ export async function SendReq({type="GET", url="/", data=undefined}){
 
     if (response.ok) {
         let json = await response.json();
-        console.log("Ответ сервера:")
-        console.log(json);
+        //console.log("Ответ сервера:")
+        //console.log(json);
         return json; 
+    } else {
+        //alert("Ошибка HTTP: " + response.status);
+        console.warn("Response not ok")
+    }
+
+    // const Http = new XMLHttpRequest();
+
+    // Http.open(type, url + data, true);
+
+    // Http.onreadystatechange = (e) => {
+    //     if(Http.readyState === XMLHttpRequest.DONE){
+    //         console.log("Ответ сервера:")
+    //         console.log(Http.responseText); 
+    //         return Http.responseText;
+    //     } 
+    // }
+
+    // Http.onerror = (e) =>{
+    //     console.log("Ошибка при отправлении запроса");
+    //     console.log(`${data}`);
+    // }
+
+    // Http.send();
+
+    
+}
+
+export async function GetUrlToDownload({url="/", file=undefined}){
+    
+        let response = await fetch(
+            url+file, 
+            {
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        
+    if (response.ok) {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob); 
     } else {
         alert("Ошибка HTTP: " + response.status);
     }

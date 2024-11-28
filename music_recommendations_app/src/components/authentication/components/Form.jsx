@@ -12,7 +12,6 @@ class Form extends Component{
         this.className = this.props.className;
         this.inputsInfo = this.props.inputsInfo;
         this.userApi = this.props.userApi;
-        console.log(this.userApi)
 
         this.state = {
             isChooseTel: false,

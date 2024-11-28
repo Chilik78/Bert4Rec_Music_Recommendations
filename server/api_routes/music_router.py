@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from services import db, rs, gd
 from server.api_models.music import InsertMusic, Music
+from server.api_models.user import UserID
 from random import choice
 
 music_router = APIRouter()
@@ -29,8 +30,12 @@ def get_random_music_route(genres:list[str]) -> Music:
     res = choice(musics)
     return createMusic(res)
     
+
 @music_router.post('/get_predicted_track')
-def get_predicted_track_route(user_id:str) -> Music:
+def get_predicted_track_route(obj:UserID, response: Response) -> Music:
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    user_id = obj.user_id
+    if not db.is_exist(user_id, 'user'): return
     convhistory_by_id = db.getValuesFromTableById('convhistory', 'user_id', user_id)  
     turned_music_ids = list(map(lambda x: x[2], convhistory_by_id))
     turned_user_id = convhistory_by_id[0][0]

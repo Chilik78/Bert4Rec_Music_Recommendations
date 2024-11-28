@@ -5,59 +5,62 @@ import BilleEilish from "../../../../../../../assets/images/main/BillieEilish.jp
 import FRANZ from "../../../../../../../assets/images/main/FRANZ.jpg";
 import STARSET from "../../../../../../../assets/images/main/STARSET.jpg";
 import DepecheMode from "../../../../../../../assets/images/main/DepecheMode.jpg";
+import DI from "../../../../../../../scripts/backend/di";
 
 export default function ChartContent() {
 
     const [chartItemInfo, setChartItemInfo] = useState([]);
 
     const getChart = async () => {
-        const musicsForChart = [
-            {
-                img: DepecheMode,
-                title: "Ghosts Again",
-                author: "Depeche Mode",
-            },
-            {
-                img: FRANZ,
-                title: "Take Me Out",
-                author: "Franz Ferdinand",
-            },
-            {
-                img: STARSET,
-                title: "DIE FOR YOU",
-                author: "STARSET",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-            {
-                img: BilleEilish,
-                title: "Bury a friend",
-                author: "Billie Eilish",
-            },
-        ];
+        // const musicsForChart = [
+        //     {
+        //         img: DepecheMode,
+        //         title: "Ghosts Again",
+        //         author: "Depeche Mode",
+        //     },
+        //     {
+        //         img: FRANZ,
+        //         title: "Take Me Out",
+        //         author: "Franz Ferdinand",
+        //     },
+        //     {
+        //         img: STARSET,
+        //         title: "DIE FOR YOU",
+        //         author: "STARSET",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        //     {
+        //         img: BilleEilish,
+        //         title: "Bury a friend",
+        //         author: "Billie Eilish",
+        //     },
+        // ];
+
+        const musicsForChart = await DI.musicApi.getAllTracksUserHistory(DI.userApi.userID)
 
         setChartItemInfo(musicsForChart);
     };
@@ -72,9 +75,9 @@ export default function ChartContent() {
                 chartItemInfo.map((info, idx) => 
                 <ChartItem 
                 num={idx + 1}
-                title={info.title}
-                img={info.img}
-                author={info.author}
+                title={info.trackName}
+                img={STARSET}
+                author={info.trackAuthor}
                 />
             )
             }        

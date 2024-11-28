@@ -37,6 +37,8 @@ class Window extends Component{
     }
 
     #updateStateFromFirstEntryUser(){
+        const genres = Array.from(document.getElementsByClassName('genre-btn-selected')).map((el) => el.getElementsByTagName('h2')[0].innerText)
+        DI.musicApi.genres = genres
         this.changeWindowFunc(WindowsType.Main);
     }
 }

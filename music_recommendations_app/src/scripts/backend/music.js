@@ -1,4 +1,4 @@
-import { SendReq } from "../helpers/requests";
+import { SendReq, GetUrlToDownload } from "../helpers/requests";
 import { SERVER_ROUTE } from "../helpers/server";
 
 export class IMusicApi {
@@ -77,12 +77,17 @@ export class RestMusicApi extends IMusicApi{
         return await SendReq({url: `${SERVER_ROUTE}/music/select_all_genres`});
     }
     async getRandomMusic(){
-        return await SendReq({url: `${SERVER_ROUTE}/music/get_random_music`});
+        if(!this.genres) this.genres = await this.getAllMusicGenres()
+        return await SendReq({url: `${SERVER_ROUTE}/music/get_random_music`, data: this.genres, type: 'POST'});
     }
-    async getPredictedTrack(history){
-        return await SendReq({url: `${SERVER_ROUTE}/music/get_predicted_track`});
+    async getPredictedTrack(user_id){
+        return await SendReq({url: `${SERVER_ROUTE}/music/get_predicted_track`, type: 'POST', data: {user_id: user_id}});
     }
     async getTrackFile(music){
-        //return await SendReq({url: `${SERVER_ROUTE}/service/get_predicted_track`});
+        const url = await GetUrlToDownload({url: `${SERVER_ROUTE}/service/get_track_file/`, file: `${music.trackName} - ${music.trackAuthor}`});
+        return url
+    }
+    async getAllTracksUserHistory(user_id){
+        return await SendReq({url: `${SERVER_ROUTE}/history/get_all_tracks_user_history`, type: 'POST', data: {user_id: user_id}});
     }
 }

@@ -2,15 +2,15 @@ from pydantic import BaseModel
 
 class Music(BaseModel):
     id:str
-    track:str
-    artist:str
+    trackName:str
+    trackAuthor:str
     genre:str
 
 class InsertMusic(BaseModel):
-    track:str
-    artist:str
+    trackName:str
+    trackAuthor:str
     genre:str
     
 class DownloadMusic(BaseModel):
-    track:str
-    artist:str
+    trackName:str
+    trackAuthor:str

@@ -1,10 +1,11 @@
 import { Component } from 'react';
 import '../../../../styles/main_window/Player.css';
 import MusicInfo from './components/MusicInfo';
+import DI from '../../../../scripts/backend/di'
 
 
 class Player extends Component {
-
+    volume = 0.3
     history = []
     state = {
         isPlaying: false,
@@ -18,24 +19,39 @@ class Player extends Component {
     constructor(props) {
         super(props);
         this.musicApi = props.musicApi;
+        this.userID = DI.userApi.userID;
         this.switchPlayback = this.#switchPlayback.bind(this);
         this.nextTrack = this.#nextTrack.bind(this);
         this.prevTrack = this.#prevTrack.bind(this);
         this.changeVolume = this.#changeVolume.bind(this);
+        this.startDomponentDidMount()
+    }
+    onLoadAudio(audio, music) {
+        this.audio.crossOrigin = "anonymous";
+        this.audio.volume = this.volume
 
-        this.musicApi.getRandomMusic().then(async ([trackName, trackAuthor])  => {
-            const filename = await this.musicApi.getTrackFile({trackName, trackAuthor})
-            console.log(filename)
-            this.audio = new Audio(filename)
-            this.audio.load()
-            this.audio.crossOrigin = "anonymous";
-            console.log(this.audio.volume)
-            const duration = this.audio.duration
-            
-            this.state.trackName = trackName
-            this.state.trackAuthor = trackAuthor
-            this.state.maxTime = duration
+        this.setState({
+            trackName: music.trackName,
+            trackAuthor: music.trackAuthor,
+            maxTime: audio.duration,
+            currentTime: 0,
+            url: audio.src
+        })
+    }
+
+    createAudio(url, music){
+        this.audio = new Audio(url)
+        this.audio.load()
+        this.audio.onloadedmetadata = () => this.onLoadAudio(this.audio, music);
+    }
+
+    startDomponentDidMount() {
+        this.musicApi.getRandomMusic().then(async (music) => {
+            if (!music) return;
+            const url = await this.musicApi.getTrackFile({ trackName: music.trackName, trackAuthor: music.trackAuthor })
+            this.createAudio(url, music)
         }
+
         )
     }
 
@@ -98,9 +114,9 @@ class Player extends Component {
         );
     }
 
-    #changeVolume(){
-        if(!this.audio) return;
-        this.audio.volume = this.audio.volume === 0 ? 1 : 0
+    #changeVolume() {
+        if (!this.audio) return;
+        this.audio.volume = this.audio.volume === 0 ? this.volume : 0
     }
 
     #secondsToTime(seconds) {
@@ -119,27 +135,33 @@ class Player extends Component {
     }
 
     async #nextTrack() {
-        if (this.state.isPlaying === true) {
-            this.#switchPlayback();
-        }
-
         this.history.push({
             trackName: this.state.trackName,
             trackAuthor: this.state.trackAuthor,
-            maxTime: this.state.maxTime
+            maxTime: this.state.maxTime,
+            url: this.state.url
         })
 
-        const music = await this.musicApi.getPredictedTrack(this.history);
-        const filename = await this.musicApi.getTrackFile(music)
-        this.audio.src = filename
+        const music = await this.musicApi.getPredictedTrack(this.userID);
+        if (!music) return;
 
-        this.setState({
-            trackName: music.trackName,
-            trackAuthor: music.trackAuthor,
-            maxTime: this.audio.duration,
-            currentTime: 0
+        if (this.state.isPlaying === true) {
+            this.#switchPlayback();
         }
-        );
+        const url = await this.musicApi.getTrackFile(music)
+        console.log('url',url)
+        this.createAudio(url, music)
+
+
+        this.onLoadAudio(this.audio, music)
+
+        // this.setState({
+        //     trackName: music.trackName,
+        //     trackAuthor: music.trackAuthor,
+        //     maxTime: this.audio.duration,
+        //     currentTime: 0
+        // }
+        // );
 
         const timeline_fill = document.getElementById('timeline-fill');
         timeline_fill.style.width = `0%`
@@ -154,9 +176,7 @@ class Player extends Component {
 
         const prevTrack = this.history.pop()
 
-        const filename = `files/${prevTrack.trackName} - ${prevTrack.trackAuthor}.mp3`
-
-        this.audio.src = filename
+        this.createAudio(prevTrack.url, prevTrack)
 
         this.setState({
             trackName: prevTrack.trackName,
@@ -194,7 +214,7 @@ class Player extends Component {
     #changeCurrentTime() {
         const timeline_fill = document.getElementById('timeline-fill');
         timeline_fill.style.width = `${this.state.currentTime / this.state.maxTime * 100}%`
-        if(Math.floor(this.state.currentTime) === this.state.maxTime){
+        if (Math.floor(this.state.currentTime) === this.state.maxTime) {
             return this.#nextTrack()
         }
         this.setState((prevState => {
@@ -202,35 +222,35 @@ class Player extends Component {
                 currentTime: prevState.currentTime + this.#tick
             }
         }))
-       
+
     }
 
-    async #startPlayMusic(){
+    async #startPlayMusic() {
         const audioPromise = this.audio.play()
-    if (audioPromise !== undefined) {
-      audioPromise
-        .then(_ => {
-          // autoplay started
-        })
-        .catch(err => {
-          // catch dom exception
-          console.info(err)
-        })
-    }
+        if (audioPromise !== undefined) {
+            audioPromise
+                .then(_ => {
+                    // autoplay started
+                })
+                .catch(err => {
+                    // catch dom exception
+                    console.info(err)
+                })
+        }
     }
 
-    async #stopPlayMusic(){
+    async #stopPlayMusic() {
         const audioPromise = this.audio.pause()
         if (audioPromise !== undefined) {
             audioPromise
-              .then(_ => {
-                // autoplay started
-              })
-              .catch(err => {
-                // catch dom exception
-                console.info(err)
-              })
-          }
+                .then(_ => {
+                    // autoplay started
+                })
+                .catch(err => {
+                    // catch dom exception
+                    console.info(err)
+                })
+        }
     }
 
     async #play() {
@@ -241,7 +261,7 @@ class Player extends Component {
         }
         else {
             await this.#startPlayMusic()
-            this.interval_id = setInterval(() => this.#changeCurrentTime(), this.#tick*1000)
+            this.interval_id = setInterval(() => this.#changeCurrentTime(), this.#tick * 1000)
         }
     }
 

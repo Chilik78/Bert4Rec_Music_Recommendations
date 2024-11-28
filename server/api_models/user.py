@@ -12,3 +12,6 @@ class InsertUser(BaseModel):
     phone:str
     email:str
     password:str
+    
+class UserID(BaseModel):
+    user_id:str

@@ -1,9 +1,9 @@
-import { VoidMusicApi } from "./music";
+import { VoidMusicApi, RestMusicApi } from "./music";
 import { VoidUserApi } from "./user";
 
 const DI = {
     userApi: new VoidUserApi(),
-    musicApi: new VoidMusicApi()
+    musicApi: new RestMusicApi()
 }
 
 export default DI;
