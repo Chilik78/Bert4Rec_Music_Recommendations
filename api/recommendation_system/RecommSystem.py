@@ -180,8 +180,13 @@ class RecommSystem:
         '''
         self.__is_logging=logging
 
-        tf_logging_mode = tf.compat.v1.logging.INFO if self.__is_logging else tf.compat.v1.logging.FATAL
-        tf.compat.v1.logging.set_verbosity(tf_logging_mode) # Установка вывода логов в консоль от tensorflow
+        if(self.__is_logging):
+            tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO) # Установка вывода логов в консоль от tensorflow
+        else: 
+            tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.FATAL) 
+
+        # tf_logging_mode = tf.compat.v1.logging.INFO if self.__is_logging else tf.compat.v1.logging.FATAL
+        # tf.compat.v1.logging.set_verbosity(tf_logging_mode) # Установка вывода логов в консоль от tensorflow
 
 
     def do_train(self, num_train_steps = None):
